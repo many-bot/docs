@@ -2,6 +2,7 @@
 Caso você só queira um bot simples pra tarefas básicas (como baixar vídeos/audios,
  fazer figurinhas, etc), recomendamos que use a instância oficial, adicionando o número:
  **+55 16 99459-1903**.
+
 No entanto, se seu objetivo é hospedar o seu próprio bot personalizado, siga os passos
  a seguir de acordo com seu sistema operacional.
 > Em caso de dúvidas sobre os passos a seguir, você pode nos contatar via [manybot@pm.me](mailto:manybot@pm.me)
