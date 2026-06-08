@@ -1,0 +1,9 @@
+[
+  {
+    "label": "Introdução",
+    "items": [
+      { "slug": "index", "label": "Sobre as docs" },
+      { "slug": "primeiros-passos", "label": "Primeiros passos" }
+    ]
+  }
+]
