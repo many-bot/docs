@@ -20,13 +20,13 @@ Envie o comando `!figurinha` juntamente com uma mídia.
 
 Responda uma mídia alheia (ou sua) com o comando `!figurinha`.
 
-![Demonstração - forma 2 do comando !figurinha](/docs/assets/sticker-creati2on-demo-02.gif)
+![Demonstração - forma 2 do comando !figurinha](/docs/assets/sticker-creation-demo-02.gif)
 
 **Forma 3:** várias figurinhas ao mesmo tempo
 
 Abra uma sessão com o comando `!figurinha`, sozinho. Depois disso, envie as mídias e quando terminar envie `!figurinha criar`.
 
-![Demonstração - forma 2 do comando !figurinha](/docs/assets/sticker-creati2on-demo-03.gif)
+![Demonstração - forma 2 do comando !figurinha](/docs/assets/sticker-creation-demo-03.gif)
 
 ### Notas importantes
 
