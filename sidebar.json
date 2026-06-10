@@ -9,7 +9,8 @@
   {
     "label": "Bot oficial",
     "items": [
-      { "slug": "official-bot-about", "label": "Sobre" }
+      { "slug": "official-bot-about", "label": "Sobre" },
+      { "slug": "official-bot-commands", "label": "Todos os comandos" }
     ]
   },
   {
