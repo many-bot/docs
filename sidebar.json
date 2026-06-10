@@ -7,6 +7,12 @@
     ]
   },
   {
+    "label": "Bot oficial",
+    "items": [
+      { "slug": "official-bot-about", "label": "Sobre" }
+    ]
+  },
+  {
     "label": "Legal",
     "items": [
       { "slug": "terms-and-privacy", "label": "Termos de uso e privacidade" }
