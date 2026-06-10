@@ -11,6 +11,7 @@ No entanto, se seu objetivo é hospedar o seu próprio bot personalizado, siga o
 ## Índice
 - [Linux](#instalacao-linux)
 - [Windows](#instalacao-windows)
+- [Problemas comuns (Windows)](#problemas-comuns-windows)
 
 > Outros sistemas como **FreeBSD**, **macOS** e **Android** não foram testados.
  Caso queira compatibilidade com algum outro sistema, crie uma issue no
@@ -137,3 +138,15 @@ manybot
 
 Assim como no Linux, será exibido um QR Code — escaneie-o com o WhatsApp em
  **Dispositivos conectados → Conectar um dispositivo**.
+
+## Problemas comuns (Windows)
+
+### "O arquivo C:\Program Files\nodejs\npm.ps1 não pode ser carregado porque a execução de scripts está desabilitada neste sistema."
+
+Para resolver você precisa definir a política de execução do PowerShell. Execute no Powershell como administrador:
+
+```powershell
+ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+Digite 'S' na próxima tela.
