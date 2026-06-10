@@ -5,5 +5,11 @@
       { "slug": "index", "label": "Sobre as docs" },
       { "slug": "getting-started", "label": "Primeiros passos" }
     ]
+  },
+  {
+    "label": "Legal",
+    "items": [
+      { "slug": "terms-and-privacy", "label": "Termos de uso e privacidade" }
+    ]
   }
 ]
