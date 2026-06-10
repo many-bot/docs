@@ -14,6 +14,12 @@
     ]
   },
   {
+    "label": "Plugins",
+    "items": [
+      { "slug": "api-reference", "label": "Referência da API" }
+    ]
+  },
+  {
     "label": "Legal",
     "items": [
       { "slug": "terms-and-privacy", "label": "Termos de uso e privacidade" }
