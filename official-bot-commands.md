@@ -14,19 +14,19 @@ Cria figurinhas a partir de imagens, GIFs, documentos ou vídeos.
 
 Envie o comando `!figurinha` juntamente com uma mídia.
 
-![Demonstração - forma 1 do comando !figurinha](/assets/docs/sticker-creation-demo-01.gif)
+![Demonstração - forma 1 do comando !figurinha](/docs/assets/sticker-creation-demo-01.gif)
 
 **Forma 2:** apenas 1 figurinha com uma mídia alheia
 
 Responda uma mídia alheia (ou sua) com o comando `!figurinha`.
 
-![Demonstração - forma 2 do comando !figurinha](/assets/docs/sticker-creati2on-demo-02.gif)
+![Demonstração - forma 2 do comando !figurinha](/docs/assets/sticker-creati2on-demo-02.gif)
 
 **Forma 3:** várias figurinhas ao mesmo tempo
 
 Abra uma sessão com o comando `!figurinha`, sozinho. Depois disso, envie as mídias e quando terminar envie `!figurinha criar`.
 
-![Demonstração - forma 2 do comando !figurinha](/assets/docs/sticker-creati2on-demo-03.gif)
+![Demonstração - forma 2 do comando !figurinha](/docs/assets/sticker-creati2on-demo-03.gif)
 
 ### Notas importantes
 
