@@ -9,13 +9,16 @@
   {
     "label": "Bot oficial",
     "items": [
-      { "slug": "official-bot-about", "label": "Sobre" },
+      { "slug": "official-bot-about", "label": "Sobre o bot oficial" },
       { "slug": "official-bot-commands", "label": "Todos os comandos" }
     ]
   },
   {
     "label": "Plugins",
     "items": [
+      { "slug": "about-plugins", "label": "Sobre os plugins" },
+      { "slug": "manyplug-cli", "label": "ManyPlug CLI" },
+      { "slug": "how-to-make-a-plugin", "label": "Como fazer um plugin para o ManyBot" },
       { "slug": "api-reference", "label": "Referência da API" }
     ]
   },
