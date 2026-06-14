@@ -18,7 +18,7 @@
     "items": [
       { "slug": "about-plugins", "label": "Sobre os plugins" },
       { "slug": "manyplug-cli", "label": "ManyPlug CLI" },
-      { "slug": "how-to-make-a-plugin", "label": "Como fazer um plugin para o ManyBot" },
+      { "slug": "how-to-make-a-plugin", "label": "Como fazer um plugin" },
       { "slug": "api-reference", "label": "Referência da API" }
     ]
   },

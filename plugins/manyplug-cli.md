@@ -29,9 +29,9 @@ manyplug install <nome no manyplug-repo>
 
 ### Opções
 
-`-l`, `--local <caminho>` - instala de um arquivo local de um plugin válido
-`-y`, `--yes` - instala sem confirmação
-`--needed` - instala somente se já não estiver instalado
+- `-l`, `--local <caminho>` - instala de um arquivo local de um plugin válido
+- `-y`, `--yes` - instala sem confirmação
+- `--needed` - instala somente se já não estiver instalado
 
 ---
 
@@ -49,7 +49,7 @@ manyplug list
 
 ### Opções:
 
-`-a`, `--all` - lista até plugins desativados
+- `-a`, `--all` - lista até plugins desativados
 
 ---
 
@@ -101,8 +101,8 @@ manyplug rm <plugin>
 
 ## Opções
 
-`-y`, `--yes` - remove sem confirmação
-`--remove-deps` - além do plugin, remove dependências - era útil apenas nas versões 3.x e anteriores do ManyBot, cujo o manyplug já não suporta mais.
+- `-y`, `--yes` - remove sem confirmação
+- `--remove-deps` - além do plugin, remove dependências - era útil apenas nas versões 3.x e anteriores do ManyBot, cujo o manyplug já não suporta mais.
 
 ---
 
@@ -120,7 +120,7 @@ manyplug sync
 
 ## Opções
 
-`-f`, `--force` - sobrescreve o registro mesmo se nada mudou
+- `-f`, `--force` - sobrescreve o registro mesmo se nada mudou
 
 ---
 
@@ -151,7 +151,7 @@ manyplug init <nome>
 
 ## Opções
 
-`-c`, `--category` - define uma categoria para o plugin (válidos: `games`, `media`, `utility`, `service`, `admin` e `fun`)
+- `-c`, `--category` - define uma categoria para o plugin (válidos: `games`, `media`, `utility`, `service`, `admin` e `fun`)
 
 ---
 
@@ -169,7 +169,7 @@ manyplug update
 
 ## Opções
 
-`-y`, `--yes` - atualiza sem confirmação
+- `-y`, `--yes` - atualiza sem confirmação
 
 ## Observação
 
@@ -187,4 +187,4 @@ Valida se um plugin local está com a estrutura correta.
 
 ```bash
 manyplug validate [caminho] 
-``
+```

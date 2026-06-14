@@ -5,6 +5,11 @@ Aqui você vai aprender tudo o que precisa para começar a desenvolver plugins p
 ## Índice:
 
 - [Estrutura padrão de um plugin](#estrutura-padrao-de-um-plugin)
+    - [index.js](#indexjs)
+    - [manyplug.json](#manyplugjson)
+    - [package.json](#packagejson)
+    - [README.md](#readmemd)
+    - [locale](#locale)
 - [Publicando seu plugin](#publicando-seu-plugin)
 
 ---
@@ -63,6 +68,7 @@ Exemplo:
     "version": "1.0.0",
     "category": "utility",
     "service": false,
+    "main": "index.js",
     "dependencies": {
         "dependencia-npm": ">=10"
     },
@@ -97,6 +103,9 @@ Categoria do plugin. Valores possíveis: `integration`, `games`, `media`, `utili
 
 #### `service`
 `true` se o plugin roda em background como serviço (sem comandos diretos). `false` se é acionado exclusivamente por comandos.
+
+#### `main`
+Nome do arquivo principal do plugin.
 
 #### `dependencies`
 Dependências npm necessárias. O formato é `"pacote": "range semver"`. Serão instaladas automaticamente pelo ManyPlug.
@@ -278,19 +287,15 @@ Depois do seu plugin ser aceito, ele será incluído no index oficial (mpindex),
 
 ```
 "synt-xerror/manymedia": {
-    "repos": {
-        "codeberg": {
-            "branchs": { 
-                "master": "https://codeberg.org/many-bot/manybot/archive/master.tar.gz"
-                "dev": "https://codeberg.org/many-bot/manybot/archive/dev.tar.gz"
-            }
-        },
-        "github": {
-            "branchs": { 
-                "master": "https://github.com/many-bot/manybot/archive/refs/heads/master.tar.gz"
-                "dev": "https://github.com/many-bot/manybot/archive/refs/heads/dev.tar.gz"
-            }
-        },
+  "repos": {
+    "codeberg": {
+      "master": "https://codeberg.org/many-bot/manybot/archive/master.tar.gz"
+      "dev": "https://codeberg.org/many-bot/manybot/archive/dev.tar.gz"
+    },
+    "github": {
+      "master": "https://github.com/many-bot/manybot/archive/refs/heads/master.tar.gz"
+      "dev": "https://github.com/many-bot/manybot/archive/refs/heads/dev.tar.gz"
     }
+  }
 }
 ```
