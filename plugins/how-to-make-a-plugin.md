@@ -2,6 +2,8 @@
 
 Aqui você vai aprender tudo o que precisa para começar a desenvolver plugins para o ManyBot.
 
+Caso ainda não leu [sobre os plugins](/docs/about-plugins), é recomendado ler para entender o que são antes de começar.
+
 ## Índice:
 
 - [Estrutura padrão de um plugin](#estrutura-padrao-de-um-plugin)
@@ -66,6 +68,7 @@ Exemplo:
     },
     "description": "Meu plugin legal pro ManyBot.",
     "version": "1.0.0",
+    "license": "MIT",
     "category": "utility",
     "service": false,
     "main": "index.js",
@@ -97,6 +100,9 @@ Descrição curta do que o plugin faz. Exibida na listagem do registro.
 
 #### `version`
 Versão atual do plugin, formato flexível, use o que mais gostar (SemVer, CalVer, etc).
+
+#### `license`
+[Licença de código aberto](https://www.freecodecamp.org/portuguese/news/como-funcionam-as-licencas-de-codigo-aberto-e-como-adiciona-las-a-seus-projetos-2/) do seu plugin, diz como o código dele pode ser distribuído e modificado.
 
 #### `category`
 Categoria do plugin. Valores possíveis: `integration`, `games`, `media`, `utility`, `service`, `admin` e `fun`
@@ -248,7 +254,16 @@ O ManyPlug vai instalar para você no lugar correto.
 
 Depois disso execute o ManyBot e verifique se os comportamentos são esperados.
 
-## 2. Enviando uma solicitação
+## 2. Criando um repositório Git 
+
+Depois disso você deve criar um repositório Git no GitHub, Codeberg, GitLab ou outra forja de sua preferência.
+
+A convenção (não obrigatória, mas incentivada) é de colocar um prefixo ".many" nos repositórios. Por exemplo:
+ `https://codeberg.org/usuario/meu-plugin.many`.
+
+Isso serve apenas para identificação, não é algo útil nem obrigatório.
+
+## 3. Enviando uma solicitação
 
 Envie um email para [manybot@pm.me](mailto:manybot@pm.me), com a seguinte estrutura:
 
@@ -270,7 +285,7 @@ O email pode ser tanto em inglês quanto em português.
 Certifique-se de ter um README explicativo no repositório para que os desenvolvedores
  entendam o que seu plugin faz.
 
-## 3. Publicação
+## 4. Publicação
 
 Após seu plugin ser revisado e testado por nós, vamos te enviar um email de volta com
  assuntos como:
