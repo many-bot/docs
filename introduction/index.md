@@ -77,6 +77,36 @@ git push origin minha-correcao
 
 Patches são o jeito clássico e ainda muito usado em projetos como o *Linux Kernel Organization*.
 
+1. Clone o repositório:
+```
+git clone https://...
+```
+2. Crie uma branch:
+```
+git checkout -b minha-correcao
+```
+3. Faça as alterações e commit:
+```
+git add .
+git commit -m "Corrige problema X"
+```
+4. Gere o patch:
+```
+git format-patch main --stdout > minha-correcao.patch
+```
+5. Envie o patch por e-mail para [devel@stxerr.dev](mailto:devel@stxerr.dev).
+
+Você pode fazer isso diretamente pelo terminal com `git send-email`:
+```
+git send-email --to=devel@stxerr.dev minha-correcao.patch
+```
+
+> Para configurar o `git send-email`, consulte a documentação do seu provedor de e-mail ou use um servidor SMTP local como o `msmtp`.
+
+Patches recebidos serão revisados e aplicados com `git am`:
+```
+git am minha-correcao.patch
+```
 
 ## Guias e tutoriais
 
