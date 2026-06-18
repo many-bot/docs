@@ -2,7 +2,12 @@
   {
     "label": "Introdução",
     "items": [
-      { "slug": "index", "label": "Sobre as docs" },
+      { "slug": "index", "label": "Sobre as docs" }
+    ]
+  },
+  {
+    "label": "Uso",
+    "items": [
       { "slug": "getting-started", "label": "Primeiros passos" }
     ]
   },
