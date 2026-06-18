@@ -297,6 +297,63 @@ ctx.log.success("Sticker enviado com sucesso!");
 
 ---
 
+## ctx.contacts (setup + runtime)
+
+Acesso a informações de contatos do WhatsApp. Disponível em ambos os contextos.
+
+> **Nota sobre `@lid`:** em grupos criados recentemente, o WhatsApp pode retornar IDs no formato
+> `@lid` em vez de `@c.us` — um identificador opaco introduzido para preservar a privacidade
+> dos usuários. Métodos como `ctx.contacts.get` aceitam ambos os formatos, mas se você estiver
+> no contexto de uma mensagem, prefira `ctx.msg.getContact()` — ele resolve o `@lid`
+> internamente sem chamadas extras.
+
+| Método            | Assinatura      | Descrição                                                                                            |
+|-------------------|-----------------|------------------------------------------------------------------------------------------------------|
+| `get`             | `(contactId)`   | Retorna um objeto com as propriedades do contato, ou `null` se não encontrado.                       |
+| `getProfilePicUrl`| `(contactId)`   | Retorna a URL da foto de perfil, ou `null` se não disponível (privacidade ou contato inexistente).   |
+| `getAbout`        | `(contactId)`   | Retorna o texto "sobre" do contato, ou `null` se não acessível pelas configurações de privacidade.   |
+
+### Objeto retornado por `ctx.contacts.get`
+
+| Propriedade   | Tipo      | Descrição                                                              |
+|---------------|-----------|------------------------------------------------------------------------|
+| `id`          | `string`  | ID serializado do contato (`"5511999999999@c.us"`).                    |
+| `number`      | `string`  | Número de telefone do contato.                                         |
+| `pushname`    | `string \| null` | Nome público configurado pelo contato no WhatsApp.              |
+| `name`        | `string \| null` | Nome salvo na sua agenda de contatos.                           |
+| `shortName`   | `string \| null` | Versão abreviada do nome salvo.                                 |
+| `isBusiness`  | `boolean` | `true` se for uma conta business.                                      |
+| `isEnterprise`| `boolean` | `true` se for uma conta enterprise.                                    |
+| `isBlocked`   | `boolean` | `true` se você bloqueou esse contato.                                  |
+| `isMe`        | `boolean` | `true` se for o próprio bot.                                           |
+| `isMyContact` | `boolean` | `true` se o número estiver salvo na sua agenda.                        |
+| `isWAContact` | `boolean` | `true` se o número estiver registrado no WhatsApp.                     |
+| `isUser`      | `boolean` | `true` se for um contato de usuário (não grupo).                       |
+| `isGroup`     | `boolean` | `true` se for um contato de grupo.                                     |
+
+**Exemplos:**
+
+```js
+// Busca info de um contato por ID
+const contact = await ctx.contacts.get("5511999999999@c.us");
+if (contact) {
+  ctx.log.info(`Pushname: ${contact.pushname}`);
+  ctx.log.info(`Business: ${contact.isBusiness}`);
+}
+
+// Foto de perfil
+const picUrl = await ctx.contacts.getProfilePicUrl("5511999999999@c.us");
+if (picUrl) {
+  await ctx.send(`Foto: ${picUrl}`);
+}
+
+// Texto "sobre"
+const about = await ctx.contacts.getAbout("5511999999999@c.us");
+await ctx.send(about ?? "Sem descrição.");
+```
+
+---
+
 ## ctx.sendTo (setup + runtime)
 
 Disponível em ambos os contextos. Envia para qualquer chat pelo ID serializado, sem depender
@@ -429,6 +486,7 @@ Contexto da mensagem que disparou o handler. Tudo que você precisa para inspeci
 | `downloadMedia()`  | `Promise<{mimetype, data}\|null>` | Baixa a mídia da mensagem. Retorna objeto com `mimetype` e `data` em base64, ou `null` se falhar.   |
 | `hasReply`         | `boolean`                         | `true` se a mensagem é uma resposta a outra mensagem.                                               |
 | `getReply()`       | `Promise<Message\|null>`          | Retorna a mensagem citada como objeto do whatsapp-web.js, ou `null`.                                |
+| `getContact()`     | `Promise<Contact\|null>`          | Retorna o objeto `Contact` do remetente, resolvendo `@lid` automaticamente.                         |
 | `reply(text)`      | `Promise`                         | Responde à mensagem com quote.                                                                      |
 | `react(emoji)`     | `Promise`                         | Adiciona uma reação de emoji à mensagem.                                                            |
 
@@ -484,6 +542,38 @@ if (ctx.msg.hasReply) {
     const media = await quoted.downloadMedia();
     // processa a mídia da mensagem citada
   }
+}
+```
+
+### Acessando o contato do remetente
+
+`ctx.msg.getContact()` é a forma recomendada de obter informações do remetente quando você
+está no contexto de uma mensagem. Ao contrário de `ctx.contacts.get(ctx.msg.sender)`, ele
+resolve IDs `@lid` internamente — necessário em grupos criados recentemente.
+
+O objeto retornado é o `Contact` nativo do whatsapp-web.js, com todos os seus métodos e
+propriedades disponíveis (veja a tabela em [ctx.contacts](#ctxcontacts-setup--runtime)).
+
+```js
+export default async function (ctx) {
+  const prefix  = ctx.config.get("CMD_PREFIX");
+  if (!ctx.msg.is(prefix + "perfil")) return;
+
+  const contact = await ctx.msg.getContact();
+  if (!contact) {
+    await ctx.send("Não foi possível obter o contato.");
+    return;
+  }
+
+  const picUrl = await contact.getProfilePicUrl().catch(() => null);
+  const about  = await contact.getAbout().catch(() => null);
+
+  await ctx.send([
+    `*${contact.pushname ?? contact.name ?? "Sem nome"}*`,
+    `Número: ${contact.number}`,
+    `Sobre: ${about ?? "—"}`,
+    `Foto: ${picUrl ?? "—"}`,
+  ].join("\n"));
 }
 ```
 
