@@ -48,6 +48,7 @@ meu-plugin/
 ├── manyplug.json
 ├── package.json
 ├── README.md
+├── .gitignore
 └── locale/
     ├── en.json
     ├── es.json
@@ -110,20 +111,20 @@ mesmo em plugins privados.
 {
   "name": "meu-plugin",
   "key": "eu/meu-plugin",
+  "version": "1.0.0",
+  "description": "Meu plugin legal pro ManyBot.",
+  "category": "utility",
+  "service": false,
   "author": {
     "name": "eu",
     "email": "meu@email.com",
     "website": "www.meusite.com"
   },
-  "description": "Meu plugin legal pro ManyBot.",
-  "version": "1.0.0",
   "license": "MIT",
-  "category": "utility",
-  "service": false,
+  "repo": "https://github.com/eu/meu-plugin.many",
   "main": "index.js",
   "dependencies": {
-    "dependencia-npm": ">=10",
-    "synt-xerror/manymedia": ">=3.2.0"
+    "dependencia-npm": ">=10"
   },
   "externalDependencies": {
     "ffmpeg": {
@@ -136,27 +137,13 @@ mesmo em plugins privados.
 
 ### Campos
 
-#### `name`
-Nome do plugin. Usado como identificador legível e no registro. Deve ser único por autor.
+#### `name` *(obrigatório)*
+Nome do plugin. Deve conter apenas letras minúsculas, números e hífens. Deve ser único por autor.
 
-#### `key`
-Chave global no formato `autor/nome`. Usada para referenciar o plugin no `mpindex` e em
-dependências de outros plugins.
+#### `version` *(obrigatório)*
+Versão atual do plugin. Use o formato que preferir — SemVer, CalVer, tanto faz.
 
-#### `author`
-Informações do autor. Somente `name` é obrigatório.
-
-#### `description`
-Descrição curta do que o plugin faz. Exibida na listagem do registro.
-
-#### `version`
-Versão atual do plugin. Use o formato que preferir (SemVer, CalVer, etc).
-
-#### `license`
-[Licença de código aberto](https://www.freecodecamp.org/portuguese/news/como-funcionam-as-licencas-de-codigo-aberto-e-como-adiciona-las-a-seus-projetos-2/)
-do plugin — define como o código pode ser distribuído e modificado por outros.
-
-#### `category`
+#### `category` *(obrigatório)*
 Categoria do plugin. Valores possíveis:
 
 | Valor         | Quando usar                                              |
@@ -169,15 +156,34 @@ Categoria do plugin. Valores possíveis:
 | `admin`       | Ferramentas de administração de grupos ou do próprio bot |
 | `fun`         | Entretenimento sem categoria específica                  |
 
+#### `key`
+Chave global no formato `autor/nome`. Usada para referenciar o plugin no `mpindex` e em
+dependências de outros plugins. Sem ela, o ManyPlug instala em `manydev/<nome>` e o `validate` vai reclamar.
+
+#### `description`
+Descrição curta do que o plugin faz. Exibida na listagem do registro.
+
+#### `author`
+Informações do autor. Somente `name` é obrigatório. Aceita também uma string simples para compatibilidade.
+
+#### `license`
+[Licença de código aberto](https://www.freecodecamp.org/portuguese/news/como-funcionam-as-licencas-de-codigo-aberto-e-como-adiciona-las-a-seus-projetos-2/)
+do plugin — define como o código pode ser distribuído e modificado por outros.
+
+## `repo`
+Repositório Git do seu plugin. Deve ser apenas um e pode ser de qualquer forja e serviço (ex. GitHub, GitLab).
+Não é obrigatório, serve apenas de identificação quando for publicado.
+
 #### `service`
 `true` se o plugin roda em background como um serviço (sem comandos diretos, ex: um monitor
-que envia alertas periódicos). `false` se é acionado por comandos do usuário.
+que envia alertas periódicos). `false` se é acionado por comandos do usuário. Padrão: `false`.
 
 #### `main`
-Nome do arquivo de entrada. Normalmente `"index.js"`.
+Nome do arquivo de entrada. Normalmente `"index.js"`. Se omitido, o ManyBot procura por `index.js`.
 
 #### `dependencies`
-Pacotes npm necessários ou plugins do ManyBot. O ManyPlug os instala automaticamente. Formato:
+Pacotes npm necessários. O ManyPlug os instala automaticamente ao instalar o plugin:
+
 ```json
 {
   "dependencies": {
@@ -187,7 +193,7 @@ Pacotes npm necessários ou plugins do ManyBot. O ManyPlug os instala automatica
 ```
 
 #### `externalDependencies`
-Programas externos que precisam estar instalados no sistema (ex: `yt-dlp`, `ffmpeg`).
+Programas externos que precisam estar instalados no sistema (ex: `yt-dlp`, `ffmpeg`):
 
 ```json
 {
@@ -205,8 +211,7 @@ Programas externos que precisam estar instalados no sistema (ex: `yt-dlp`, `ffmp
 ```
 
 - `command` — comando usado para verificar se o programa está disponível no `PATH`
-- `optional` — se `false`, o plugin não carrega sem esse programa; se `true`, degrada
-  graciosamente (pode funcionar parcialmente sem ele)
+- `optional` — se `false`, o ManyPlug avisa sobre a dependência ausente na instalação; se `true`, é tratado como aviso menor
 
 ---
 
@@ -326,27 +331,29 @@ export default async function (ctx) {
 }
 ```
 
-> Locales **não** são obrigatórios, servem apenas para a tradução do seu plugin. Porém, são incentivados.
+> Locales não são obrigatórios, mas são incentivados. Sem locale, o plugin simplesmente não oferece suporte a múltiplos idiomas.
 
-Para mais detalhes sobre a API de i18n (internacionalization), veja [ctx.i18n](/docs/api-reference#ctxi18n).
+Para mais detalhes sobre a API de i18n, veja [ctx.i18n](/docs/api-reference#ctxi18n).
 
 ---
 
 ## Publicando seu plugin
 
-Aqui é somente se quiser que outras pessoas usem seu plugin além de você, a partir do índice oficial.
+Aqui é somente se quiser que outras pessoas usem seu plugin a partir do índice oficial.
 Totalmente dispensável.
 
-### 1. Teste localmente
+### 1. Valide e teste localmente
 
-Antes de qualquer coisa, instale e teste:
+Antes de qualquer coisa, rode o validador e instale localmente:
 
 ```bash
-manyplug install --local /caminho/do/seu/plugin
+manyplug validate .
+manyplug install --local .
 ```
 
-O ManyPlug instala o plugin no lugar correto. Execute o bot e confirme que tudo funciona
-como esperado antes de prosseguir.
+O `validate` checa campos obrigatórios, tipos, entry point, locale e dependências externas.
+Corrija tudo que ele apontar antes de continuar. Depois confirme que o plugin funciona
+rodando o bot normalmente.
 
 ### 2. Crie um repositório Git
 
@@ -375,6 +382,9 @@ Codeberg: https://codeberg.org/.../...
 O email pode ser em inglês ou português. Certifique-se de ter um README explicativo no
 repositório — é o que vai ser lido durante a revisão.
 
+> Caso não queira enviar via email, é possível enviar na nossa comunidade do
+[Discord](https://discord.com/invite/gC7aKChXmA) ou [WhatsApp](https://chat.whatsapp.com/KfOuIwhpQjN8fcZTMHmaGQ).
+
 ### 4. Revisão e publicação
 
 Após a revisão, você receberá um email com:
@@ -383,7 +393,7 @@ Após a revisão, você receberá um email com:
 - Feedback sobre o código ou documentação
 - Qualquer outra informação relevante
 
-O atendimento é 100% humano. Sem medo de perguntar.
+O atendimento é 100% humano e anônimo. Sem medo de perguntar.
 
 Se aceito, o plugin entra no índice oficial (`mpindex`) e fica disponível para instalação
 via `manyplug install autor/nome`:

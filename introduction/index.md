@@ -1,11 +1,11 @@
 # ManyBot Docs
 
-Essa é a documentação oficial da ManyBot, aqui você vai encontrar tudo o que quer saber sobre o projeto,
+Essa é a documentação oficial do ManyBot, aqui você vai encontrar tudo o que quer saber sobre o projeto,
  como instalar, como configurar, como desenvolver, manter e como contribuir para o desenvolvimento.
 
 ## Colaboração
 
-A ManyBot é de código-aberto, sob a [Licença Pública Geral GNU 3.0](https://www.gnu.org/licenses/gpl-3.0.pt-br.html) (GPLv3).
+O ManyBot é de código-aberto, sob a [Licença Pública Geral GNU 3.0](https://www.gnu.org/licenses/gpl-3.0.pt-br.html) (GPLv3).
  Isso significa que qualquer um pode inspecionar o código, modificar, redistribuir e colaborar.
 
 Caso seja um desenvolvedor interessado em ajudar, abaixo você vai aprender a como ajudar no desenvolvimento do ManyBot e

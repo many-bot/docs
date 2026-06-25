@@ -1,190 +1,152 @@
 # ManyPlug CLI
-
 O gerenciador de plugins oficial do ManyBot.
-
-Abaixo você encontra informações sobre todos os comandos e como usar cada.
 
 ---
 
 ## install
 
-### O que faz?
-
-Instala plugins do [manyplug-repo](https://github/many-bot/manyplug-repo) (obsoleto) ou do [mpindex](/manyplug/mpindex.json)
- ou de um repositório Git.
-
-### Uso
-
-*Atual** (mpindex) - recomendado.
+Instala plugins do [mpindex](https://manybot.stxerr.dev/manyplug/mpindex.json) ou de um caminho local.
 
 ```bash
-manyplug install <usuário/plugin> [...opções]
+manyplug install <autor/plugin> [plugin2...]
 ```
 
-**Legacy** (manyplug-repo) - depende do **Git** instalado no sistema e será desativado em breve.
-
 ```bash
-manyplug install <nome no manyplug-repo>
+# local
+manyplug install --local <caminho>
 ```
 
 ### Opções
+- `-l`, `--local <caminho>` — instala de um diretório local com `manyplug.json` válido
+- `-w`, `--watch` — observa mudanças e reinstala automaticamente (requer `--local`)
+- `-b`, `--branch <branch>` — instala de uma branch específica
+- `-y`, `--yes` — pula confirmação
 
-- `-l`, `--local <caminho>` - instala de um arquivo local de um plugin válido
-- `-y`, `--yes` - instala sem confirmação
-- `--needed` - instala somente se já não estiver instalado
+> Plugins sem `key` no `manyplug.json` são instalados em `manydev/<nome>`. Adicione `"key": "autor/nome"` para evitar isso.
+
+---
+
+## update
+
+Reinstala todos os plugins não-locais com as versões mais recentes do registry.
+
+```bash
+manyplug update
+```
+
+### Opções
+- `-y`, `--yes` — pula confirmação
+
+> Plugins locais (instalados com `--local`) e sem `key` são ignorados.
 
 ---
 
 ## list, ls
 
-### O que faz?
-
-Lista plugins instalados e ativos.
-
-### Uso:
+Lista plugins instalados. Por padrão, mostra só os ativos.
 
 ```bash
 manyplug list
+manyplug ls --all
 ```
 
-### Opções:
-
-- `-a`, `--all` - lista até plugins desativados
+### Opções
+- `-a`, `--all` — inclui plugins desativados
 
 ---
 
-## enable
+## enable / disable
 
-### O que faz?
-
-Ativa plugins instalados.
-
-### Uso:
+Ativa ou desativa plugins instalados. Aceita múltiplos nomes de uma vez.
 
 ```bash
-manyplug enable <plugin>
-```
-
----
-
-## disable
-
-### O que faz?
-
-Desativa plugins instalados.
-
-### Uso:
-
-```bash
-manyplug disable <plugin>
+manyplug enable <plugin> [plugin2...]
+manyplug disable <plugin> [plugin2...]
 ```
 
 ---
 
 ## remove, rm
 
-### O que faz?
-
-Remove plugins instalados.
-
-### Uso:
+Remove plugins instalados. Oferece a opção de apagar os dados do plugin também.
 
 ```bash
-manyplug remove <plugin>
-```
-
-ou
-
-```bash
+manyplug remove <plugin> [plugin2...]
 manyplug rm <plugin>
 ```
 
-## Opções
-
-- `-y`, `--yes` - remove sem confirmação
-- `--remove-deps` - além do plugin, remove dependências - era útil apenas nas versões 3.x e anteriores do ManyBot, cujo o manyplug já não suporta mais.
-
----
-
-## sync (obsoleto)
-
-### O que faz?
-
-Sincroniza registry local - entrando em desuso em novas versões.
-
-### Uso:
-
-```bash
-manyplug sync
-```
-
-## Opções
-
-- `-f`, `--force` - sobrescreve o registro mesmo se nada mudou
+### Opções
+- `-y`, `--yes` — pula confirmação de remoção do plugin
+- `-Y` — pula todas as confirmações, incluindo a dos dados
 
 ---
 
 ## init
 
-### O que faz?
-
-Cria um template de plugin para desenvolvimento.
-
-Estrutura padrão:
+Cria o esqueleto de um novo plugin para desenvolvimento.
 
 ```bash
-plugin
+manyplug init <nome>
+```
+
+Estrutura gerada:
+
+```
+<nome>/
 ├── index.js
-├── locale
-│   ├── en.json
-│   └── pt.json
 ├── manyplug.json
 ├── package.json
-└── README.md
+├── README.md
+├── .gitignore
+└── locale/
+    ├── pt.json
+    └── en.json
 ```
 
-### Uso:
-
-```bash
-manyplug init <nome> 
-```
-
-## Opções
-
-- `-c`, `--category` - define uma categoria para o plugin (válidos: `games`, `media`, `utility`, `service`, `admin` e `fun`)
-
----
-
-## update
-
-### O que faz?
-
-Atualiza todos os plugins de uma só vez. 
-
-### Uso:
-
-```bash
-manyplug update 
-```
-
-## Opções
-
-- `-y`, `--yes` - atualiza sem confirmação
-
-## Observação
-
-Plugins que não estão no `mpindex` ou no `manyplug-repo` não são atualizados automaticamente.
+### Opções
+- `-c`, `--category <cat>` — categoria do plugin: `games`, `media`, `utility`, `service`, `admin`, `fun` (padrão: `utility`)
+- `--service` — marca como plugin de serviço em segundo plano
 
 ---
 
 ## validate, val
 
-### O que faz?
-
-Valida se um plugin local está com a estrutura correta.
-
-### Uso:
+Valida o `manyplug.json` de um plugin local — campos obrigatórios, tipos, entry point, locale e dependências externas.
 
 ```bash
-manyplug validate [caminho] 
+manyplug validate [caminho]   # padrão: .
+```
+
+---
+
+## version
+
+Exibe ou atualiza a versão no `manyplug.json` do plugin atual.
+
+```bash
+manyplug version           # exibe a versão atual
+manyplug version 1.2.0     # atualiza para 1.2.0
+```
+
+> Pode ser qualquer string, não precisa seguir semver.
+
+---
+
+## info
+
+Mostra detalhes de um plugin instalado: versão, categoria, tipo, status, tamanho, dados e dependências.
+
+```bash
+manyplug info <plugin>
+```
+
+Aceita nome curto (`meu-plugin`) ou chave completa (`autor/meu-plugin`).
+
+---
+
+## help
+
+```bash
+manyplug help
+manyplug help <comando>
 ```
