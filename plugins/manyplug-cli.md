@@ -64,6 +64,9 @@ manyplug enable <plugin> [plugin2...]
 manyplug disable <plugin> [plugin2...]
 ```
 
+### Opções
+- `-a`, `--all` — desativa/ativa todos os plugins instalados
+
 ---
 
 ## remove, rm
