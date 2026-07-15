@@ -67,11 +67,11 @@ git commit -m "Corrige problema X"
 git push origin minha-correcao
 ```
 8. Abra a página do seu fork no GitHub/Codeberg.
-9. Clique em "Criar Pull Request". 
-9. Escolha:
+9. Clique em "Criar Pull Request".
+10. Escolha:
 - Base: manybot/master
 - Compare: seu-fork/minha-correcao
-10. Escreva uma descrição e envie.
+11. Escreva uma descrição e envie.
 
 #### Git patches
 

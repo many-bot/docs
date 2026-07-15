@@ -1,3 +1,5 @@
+# Termos de uso e privacidade
+
 ## Termos de Uso
 
 ### 1. Natureza do Software

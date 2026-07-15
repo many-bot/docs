@@ -1,5 +1,7 @@
 # Comandos do bot oficial
 
-Ei, essa página não existe mais!
+Essa página não existe mais — a lista de comandos muda com frequência e rapidamente ficava
+desatualizada aqui.
 
-Para descobrir os comandos da Many, envie uma mensagem pra ela no contato oficial :)
+Para ver os comandos disponíveis, envie uma mensagem para a Many no
+[contato oficial](/docs/official-bot-about) e peça o menu de ajuda diretamente por lá.

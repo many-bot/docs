@@ -7,6 +7,7 @@ Caso ainda não leu [sobre os plugins](/docs/about-plugins), é recomendado ler 
 ## Índice
 
 - [Exemplo mínimo](#exemplo-minimo)
+- [TypeScript & Language Server Protocol (LSP)](#typescript--language-server-protocol-lsp)
 - [Estrutura padrão de um plugin](#estrutura-padrao-de-um-plugin)
     - [index.js](#indexjs)
     - [manyplug.json](#manyplugjson)
@@ -25,33 +26,104 @@ Antes de entrar nos detalhes, veja como é um plugin funcional do começo ao fim
 // plugins/meu-plugin/index.js
 
 export default async function (ctx) {
-  const prefix = ctx.config.get("CMD_PREFIX");
+  const { msg } = ctx;
 
   // ignora tudo que não for o comando
-  if (!ctx.msg.is(prefix + "oi")) return;
+  if (!msg.is("oi")) return;
 
-  await ctx.msg.reply(`Olá, ${ctx.msg.senderName}!`);
+  await msg.reply.text(`Olá, ${ctx.msg.senderName}!`);
 }
 ```
 
 É só isso. Um arquivo exportando uma função `default` que recebe `ctx` — o objeto com toda a
 API do bot. Para entender o que mais está disponível no `ctx`, veja a
-[Referência da API](/docs/api-reference).
+[Referência da API](/docs/00-index).
 
 ---
 
-## Estrutura padrão de um plugin
+## TypeScript
+
+Você pode desenvolver plugins com **autocomplete completo** usando TypeScript ou JSDoc — o
+ManyBot ainda não publica um pacote de tipos próprio, mas o `manyplug init` já resolve isso pra
+você, gerando um `types.d.ts` local dentro do próprio plugin.
+
+### JavaScript com JSDoc (zero setup)
+
+```js
+/**
+ * @param {import('./types.js').PluginContext} ctx
+ */
+export default async function (ctx) {
+  // autocomplete funciona aqui ✅
+  if (ctx.msg.is("oi")) {
+    await ctx.msg.reply.text(`Olá, ${ctx.msg.senderName}!`);
+  }
+}
+```
+
+### TypeScript (recomendado para projetos maiores)
+
+Peça pro `manyplug init` já montar a estrutura de TypeScript:
+
+```bash
+manyplug init meu-plugin --lang ts
+```
+
+Isso gera:
+
+```
+meu-plugin/
+├── src/
+│   └── index.ts
+├── manyplug.json      # "main": "dist/index.js"
+├── package.json       # scripts.build + typescript como devDependency
+├── tsconfig.json
+├── types.d.ts
+└── locale/
+    ├── pt.json
+    └── en.json
+```
+
+`src/index.ts` já vem com o tipo importado:
+
+```typescript
+import type { PluginContext } from "../types.js";
+
+export default async function (ctx: PluginContext) {
+  if (!ctx.msg.is("oi")) return;
+
+  // autocomplete completo do ctx e de todos os métodos ✅
+  await ctx.msg.reply.text(`Olá, ${ctx.msg.senderName}!`);
+}
+```
+
+> **Importante:** o ManyBot só carrega arquivos `.js` já compilados — ele **não** transpila
+> TypeScript sozinho. Antes de instalar ou publicar, rode:
+>
+> ```bash
+> npm run build
+> ```
+>
+> Isso compila `src/index.ts` para `dist/index.js`, que é o arquivo que `main` no
+> `manyplug.json` aponta. Repita sempre que editar o código-fonte — e lembre de rodar o build
+> antes de cada `manyplug install --local .` durante o desenvolvimento.
+
+O `types.d.ts` gerado é seu — edite-o à vontade conforme for usando mais partes do `ctx` que
+ainda não estão descritas nele. Ele não é publicado nem versionado centralmente, é só um stub
+local pro seu editor.
+
+---
 
 ```
 meu-plugin/
 ├── index.js
 ├── manyplug.json
 ├── package.json
+├── types.d.ts
 ├── README.md
 ├── .gitignore
 └── locale/
     ├── en.json
-    ├── es.json
     └── pt.json
 ```
 
@@ -74,11 +146,9 @@ export async function setup(ctx) {
 
 // default: executado em cada mensagem recebida (obrigatório)
 export default async function (ctx) {
-  const prefix = ctx.config.get("CMD_PREFIX");
+  if (!ctx.msg.is("hello")) return;
 
-  if (!ctx.msg.is(prefix + "hello")) return;
-
-  await ctx.msg.reply("Hello!");
+  await ctx.msg.reply.text("Hello!");
 }
 ```
 
@@ -152,9 +222,15 @@ Categoria do plugin. Valores possíveis:
 | `media`       | Download, conversão ou envio de mídia                    |
 | `games`       | Jogos e interações por turnos                            |
 | `integration` | Integrações com APIs e serviços externos                 |
-| `service`     | Plugins que rodam em background sem comandos diretos     |
 | `admin`       | Ferramentas de administração de grupos ou do próprio bot |
 | `fun`         | Entretenimento sem categoria específica                  |
+| `moderation`  | Anti-spam, filtros de conteúdo, moderação automática     |
+| `ai`          | Integrações com modelos de IA/LLM                        |
+| `education`   | Ferramentas educacionais, dicionários, tradutores        |
+| `social`      | Interação social, perfis, rankings entre usuários        |
+| `economy`     | Moedas virtuais, lojas, sistemas de pontos                |
+| `automation`  | Automatizações e fluxos disparados por eventos            |
+| `tools`       | Utilitários técnicos (ex: conversores, geradores)         |
 
 #### `key`
 Chave global no formato `autor/nome`. Usada para referenciar o plugin no `mpindex` e em
@@ -182,7 +258,8 @@ que envia alertas periódicos). `false` se é acionado por comandos do usuário.
 Nome do arquivo de entrada. Normalmente `"index.js"`. Se omitido, o ManyBot procura por `index.js`.
 
 #### `dependencies`
-Pacotes npm necessários. O ManyPlug os instala automaticamente ao instalar o plugin:
+Pacotes npm necessários **em runtime**. O ManyPlug os instala automaticamente ao instalar o
+plugin:
 
 ```json
 {
@@ -191,6 +268,9 @@ Pacotes npm necessários. O ManyPlug os instala automaticamente ao instalar o pl
   }
 }
 ```
+
+> Pacotes só de tipos não entram aqui — vão em `devDependencies` no `package.json` do seu
+> projeto (como o `typescript` da seção de TypeScript acima).
 
 #### `externalDependencies`
 Programas externos que precisam estar instalados no sistema (ex: `yt-dlp`, `ffmpeg`):
@@ -211,7 +291,9 @@ Programas externos que precisam estar instalados no sistema (ex: `yt-dlp`, `ffmp
 ```
 
 - `command` — comando usado para verificar se o programa está disponível no `PATH`
-- `optional` — se `false`, o ManyPlug avisa sobre a dependência ausente na instalação; se `true`, é tratado como aviso menor
+- `optional` — se `false` e o programa não for encontrado: `manyplug install` mostra um aviso mas
+  instala mesmo assim; já `manyplug validate` trata como **erro** (bloqueia, encerra com código
+  de saída 1). Se `true`, é sempre só um aviso em ambos os comandos.
 
 ---
 
@@ -273,7 +355,7 @@ sharing the link.
 
 ## Configuration
 
-Add to `manybot.conf`:
+Add to `manybot.toml`:
 
 | Key                | Default | Description                                                    |
 |--------------------|---------|----------------------------------------------------------------|
@@ -286,7 +368,7 @@ Add to `manybot.conf`:
 ## locale
 
 Diretório com as traduções do seu plugin. O ManyBot carrega automaticamente o arquivo
-correspondente ao idioma configurado no `.conf`.
+correspondente ao idioma configurado no `manybot.toml`.
 
 Estrutura:
 
@@ -327,13 +409,13 @@ export default async function (ctx) {
   if (!ctx.msg.is(prefix + "hello")) return;
 
   // {{name}} é substituído pelo valor passado no segundo argumento
-  await ctx.msg.reply(t("hello", { name: ctx.msg.senderName }));
+  await ctx.msg.reply.text(t("hello", { name: ctx.msg.senderName }));
 }
 ```
 
 > Locales não são obrigatórios, mas são incentivados. Sem locale, o plugin simplesmente não oferece suporte a múltiplos idiomas.
 
-Para mais detalhes sobre a API de i18n, veja [ctx.i18n](/docs/api-reference#ctxi18n).
+Para mais detalhes sobre a API de i18n, veja [ctx.i18n](/docs/08-ctx-utilities/#ctxi18n).
 
 ---
 
