@@ -34,8 +34,7 @@ manyplug init <nome>
 <nome>/
 ├── index.js
 ├── manyplug.json
-├── package.json
-├── types.d.ts        # stub de tipos local, pra autocomplete via JSDoc
+├── package.json        # devDependencies: @manybot/types
 ├── README.md
 ├── .gitignore
 └── locale/
@@ -52,9 +51,8 @@ Com `--lang ts` (ou escolhendo `ts` no prompt), a estrutura muda um pouco:
 ├── src/
 │   └── index.ts
 ├── manyplug.json      # "main": "dist/index.js"
-├── package.json       # inclui "scripts.build" e typescript como devDependency
+├── package.json       # inclui "scripts.build" e devDependencies: typescript, @manybot/types
 ├── tsconfig.json
-├── types.d.ts
 ├── README.md
 ├── .gitignore         # já ignora dist/
 └── locale/
@@ -66,16 +64,17 @@ O ManyBot só carrega arquivos `.js` já compilados — ele não transpila TypeS
 `manyplug install --local .`, rode:
 
 ```bash
+npm install
 npm run build
 ```
 
 Isso gera `dist/index.js`, que é o arquivo que `manyplug.json` aponta em `main`. Repita o build
 sempre que editar `src/index.ts`.
 
-Em ambos os casos (JS ou TS), o `types.d.ts` gerado descreve o formato do `ctx` — importe dele
-(`import('./types.js').PluginContext` via JSDoc, ou `import type { PluginContext } from "./types.js"`
-em TS) pra ter autocomplete no seu editor. Veja a [Referência da API](/docs/00-index) pra saber
-o que cada parte de `ctx` faz.
+Em ambos os casos (JS ou TS), o pacote `@manybot/types` (adicionado como `devDependency` pelo
+`init`) descreve o formato do `ctx` — importe dele (`import('@manybot/types').PluginContext` via
+JSDoc, ou `import type { PluginContext } from "@manybot/types"` em TS) pra ter autocomplete no
+seu editor. Veja a [Referência da API](/docs/00-index) pra saber o que cada parte de `ctx` faz.
 
 ---
 

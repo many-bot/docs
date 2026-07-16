@@ -53,6 +53,7 @@ Esses são os eventos nativos do socket Baileys (`sock.ev`), repassados via `ctx
 | `call` | `{ id, from, status, isVideo }[]` | Chamada recebida, aceita, rejeitada ou encerrada. |
 | `labels.edit` / `labels.association` | labels do WhatsApp Business | Labels criadas/editadas ou associadas a um chat. |
 
-> Payloads exatos vêm de `BaileysEventMap` (`@whiskeysockets/baileys`). O ManyBot ainda não
-> publica tipos próprios, então pra autocomplete no `handler` de `ctx.events.on(...)`, importe o
-> tipo direto de `@whiskeysockets/baileys` no seu plugin (adicionando-o como dependência).
+> Payloads exatos vêm de `BaileysEventMap` (`@whiskeysockets/baileys`). O pacote `@manybot/types`
+> já tipa `ctx.events.on`/`once` sobre esse mapa — o `handler` recebe o payload correto
+> automaticamente pra qualquer evento nativo do Baileys, sem precisar importar nada extra no
+> seu plugin.

@@ -4,9 +4,9 @@ Plugins funcionam interagindo com a API do ManyBot. Ela expõe um conjunto de re
 permite aos plugins enviar e receber mensagens, acessar informações e utilizar funcionalidades do
 WhatsApp sem precisar lidar diretamente com o socket ou sua implementação.
 
-> **TypeScript/JSDoc:** o ManyBot ainda não publica um pacote de tipos próprio. Ao criar um plugin
-> com `manyplug init`, um arquivo `types.d.ts` local é gerado descrevendo o `ctx` — é ele que dá
-> autocomplete no seu editor, tanto em JS (via JSDoc) quanto em TS. Veja
+> **TypeScript/JSDoc:** o ManyBot publica seu próprio pacote de tipos, `@manybot/types`. Ao criar
+> um plugin com `manyplug init`, ele já entra como `devDependency` no `package.json` gerado — é
+> ele que dá autocomplete no seu editor, tanto em JS (via JSDoc) quanto em TS. Veja
 > [como configurar](/docs/how-to-make-a-plugin/#typescript).
 
 1. [Anatomia de um plugin & guardOptions](/docs/01-plugins-basic/)

@@ -10,9 +10,9 @@ nenhum comando embutido, tudo o que ele faz vem de plugins instalados e ativos.
 - **TypeScript** — precisa ser compilado antes (o ManyBot só carrega `.js`); `manyplug init --lang ts`
   já monta a estrutura de build pra isso
 
-Não existe um pacote de tipos oficial publicado separadamente ainda — ao criar um plugin com
-`manyplug init`, um `types.d.ts` local é gerado dentro do próprio plugin, descrevendo o `ctx`. Veja
-[como fazer um plugin](/docs/how-to-make-a-plugin) para detalhes.
+O pacote de tipos oficial é o `@manybot/types`, publicado no npm — `manyplug init` já adiciona
+como `devDependency` do plugin, dando autocomplete pro `ctx` tanto em JS (via JSDoc) quanto em TS.
+Veja [como fazer um plugin](/docs/how-to-make-a-plugin) para detalhes.
 
 ## Download e instalação
 

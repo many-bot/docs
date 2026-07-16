@@ -49,7 +49,6 @@ plugins/meu-plugin/
 
 ```js
 ctx.utils.emptyFolder(DOWNLOADS_DIR); // apaga conteúdo sem remover a pasta
-ctx.utils.getChatId(chat);            // "5511999999999@s.whatsapp.net"
 ```
 
 ---
@@ -212,7 +211,7 @@ ctx.log.error(`Falha: ${err.message}`);
 ctx.log.success("Sticker enviado!");
 ```
 
-Prefira a `console.log` — mantém formato consistente com o resto do bot.
+Prefira `ctx.log` a `console.log` — mantém formato consistente com o resto do bot.
 
 ---
 

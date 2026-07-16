@@ -44,14 +44,14 @@ API do bot. Para entender o que mais está disponível no `ctx`, veja a
 ## TypeScript
 
 Você pode desenvolver plugins com **autocomplete completo** usando TypeScript ou JSDoc — o
-ManyBot ainda não publica um pacote de tipos próprio, mas o `manyplug init` já resolve isso pra
-você, gerando um `types.d.ts` local dentro do próprio plugin.
+ManyBot publica seu próprio pacote de tipos, `@manybot/types`, e o `manyplug init` já deixa
+tudo configurado pra você.
 
 ### JavaScript com JSDoc (zero setup)
 
 ```js
 /**
- * @param {import('./types.js').PluginContext} ctx
+ * @param {import('@manybot/types').PluginContext} ctx
  */
 export default async function (ctx) {
   // autocomplete funciona aqui ✅
@@ -60,6 +60,10 @@ export default async function (ctx) {
   }
 }
 ```
+
+`manyplug init` já adiciona `@manybot/types` como `devDependency` no `package.json` gerado —
+rode `npm install` no diretório do plugin e o autocomplete funciona direto, sem nenhum arquivo
+de tipos local.
 
 ### TypeScript (recomendado para projetos maiores)
 
@@ -76,18 +80,17 @@ meu-plugin/
 ├── src/
 │   └── index.ts
 ├── manyplug.json      # "main": "dist/index.js"
-├── package.json       # scripts.build + typescript como devDependency
+├── package.json       # devDependencies: typescript, @manybot/types
 ├── tsconfig.json
-├── types.d.ts
 └── locale/
     ├── pt.json
     └── en.json
 ```
 
-`src/index.ts` já vem com o tipo importado:
+`src/index.ts` já vem com o tipo importado do pacote publicado:
 
 ```typescript
-import type { PluginContext } from "../types.js";
+import type { PluginContext } from "@manybot/types";
 
 export default async function (ctx: PluginContext) {
   if (!ctx.msg.is("oi")) return;
@@ -101,6 +104,7 @@ export default async function (ctx: PluginContext) {
 > TypeScript sozinho. Antes de instalar ou publicar, rode:
 >
 > ```bash
+> npm install
 > npm run build
 > ```
 >
@@ -108,18 +112,13 @@ export default async function (ctx: PluginContext) {
 > `manyplug.json` aponta. Repita sempre que editar o código-fonte — e lembre de rodar o build
 > antes de cada `manyplug install --local .` durante o desenvolvimento.
 
-O `types.d.ts` gerado é seu — edite-o à vontade conforme for usando mais partes do `ctx` que
-ainda não estão descritas nele. Ele não é publicado nem versionado centralmente, é só um stub
-local pro seu editor.
-
 ---
 
 ```
 meu-plugin/
 ├── index.js
 ├── manyplug.json
-├── package.json
-├── types.d.ts
+├── package.json       # devDependencies: @manybot/types
 ├── README.md
 ├── .gitignore
 └── locale/

@@ -33,13 +33,12 @@ Mesma shape em `ctx.contacts.get()` e `ctx.msg.getContact()`:
   number: string;          // "5511999999999"
   pushname: string | null;
   name: string | null;     // salvo na sua agenda
-  shortName: string | null;
+  shortName: null;
   isBusiness: boolean;
   isEnterprise: boolean;
   isBlocked: boolean;
   isMe: boolean;
-  isMyContact: boolean;
-  isWAContact: boolean;
+  isWAAccount: boolean;
   isUser: boolean;
   isGroup: boolean;
   mention: { text: string; mentions: string[] }; // spread nas opções de envio
