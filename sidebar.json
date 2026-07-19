@@ -23,7 +23,8 @@
     "items": [
       { "slug": "about-plugins",        "label": "Sobre os plugins" },
       { "slug": "manyplug-cli",         "label": "ManyPlug CLI" },
-      { "slug": "how-to-make-a-plugin", "label": "Como fazer um plugin" }
+      { "slug": "how-to-make-a-plugin", "label": "Como fazer um plugin" },
+      { "slug": "best-practices",       "label": "Boas práticas" }
     ]
   },
   {

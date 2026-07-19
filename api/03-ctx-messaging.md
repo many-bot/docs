@@ -115,26 +115,49 @@ if (ctx.msg.hasMedia) {
 
 ```js
 if (ctx.msg.hasReply) {
-  const quoted = await ctx.msg.getReply(); // { key, message, pushName } | null — não é um ctx.msg completo
-  console.log(quoted?.pushName);
+  const quoted = await ctx.msg.getReply(); // objeto igual ao ctx.msg | null
+  console.log(quoted?.senderName, quoted?.hasMedia, quoted?.body);
 }
 ```
 
-`getReply()` retorna a mensagem original em formato bruto (o mesmo formato interno do Baileys),
-não um `ctx.msg` completo — então **não tem** `.hasMedia`/`.downloadMedia()`/`.reply` prontos.
-Hoje não existe um atalho público pra baixar mídia de uma mensagem citada; isso é uma limitação
-conhecida. Se seu plugin precisa disso, o campo `quoted.message` tem a estrutura crua do Baileys
-(ex: `quoted.message.imageMessage`), mas mexer nisso diretamente significa depender de detalhes
-internos que podem mudar.
+`getReply()` devolve um objeto **na mesma shape do `ctx.msg`** (`body`, `type`, `sender`,
+`senderName`, `hasMedia`, `isGif`, `downloadMedia()`, `hasPrefix`, `command`, `args`, `reply`,
+etc.) — não é o formato bruto do Baileys. Isso quer dizer que dá sim pra usar
+`quoted.hasMedia`/`quoted.downloadMedia()`/`quoted.reply.text(...)` direto:
+
+```js
+if (ctx.msg.hasReply) {
+  const quoted = await ctx.msg.getReply();
+  if (quoted?.hasMedia) {
+    const media = await quoted.downloadMedia(); // baixa a mídia da mensagem citada
+  }
+}
+```
+
+> Não existe campo `quoted.pushName` nem `quoted.message` — use `quoted.senderName` (igual ao
+> `ctx.msg.senderName`) e, se precisar da estrutura crua do Baileys por algum motivo específico,
+> não tem atalho público pra isso hoje.
+
+> `getReply()` não faz nenhuma chamada de rede — ele só reprocessa dados que a mensagem atual já
+> trouxe consigo (a citação vem embutida em `contextInfo`). Não tem delay associado a ele.
+
+> `quoted.senderName` mostra o nome de exibição real **se** o ManyBot já tiver visto essa pessoa
+> mandar alguma mensagem enquanto o bot estava online (o nome é aprendido ao vivo, mensagem por
+> mensagem — veja a nota sobre isso em [ctx.contacts](/docs/05-ctx-contacts/)). Se ela nunca
+> apareceu enquanto o bot estava rodando, cai pro número mesmo.
 
 ### Contato do remetente
 
 `ctx.msg.getContact()` resolve `@lid` automaticamente — prefira isso a
 `ctx.contacts.get(ctx.msg.sender)` dentro de um handler. Mesma shape de
-[objeto de contato](/docs/05-ctx-contacts/#objeto-de-contato-normalizado).
+[objeto de contato](/docs/05-ctx-contacts/#objeto-de-contato-normalizado), incluindo o mesmo
+comportamento de devolver `null` pra alguém que o bot ainda não "viu" mandar mensagem (veja a
+nota em [ctx.contacts](/docs/05-ctx-contacts/)) — trate esse caso antes de usar `contact.mention`
+ou qualquer outro campo:
 
 ```js
 const contact = await ctx.msg.getContact();
+if (!contact) return; // ainda não temos dados desse contato
 await ctx.msg.reply.text(`oi ${contact.mention.text}`, contact.mention);
 ```
 

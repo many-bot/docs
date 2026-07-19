@@ -4,6 +4,10 @@ Aqui você vai aprender tudo que precisa para começar a desenvolver plugins par
 
 Caso ainda não leu [sobre os plugins](/docs/about-plugins), é recomendado ler antes de continuar.
 
+> Depois de passar por essa página, vale a pena ler também
+> [boas práticas em plugins](/docs/best-practices) — principalmente a parte sobre dependências
+> nativas, que trava a instalação em bastante gente no Android/Termux se não for evitada.
+
 ## Índice
 
 - [Exemplo mínimo](#exemplo-minimo)
@@ -270,6 +274,10 @@ plugin:
 
 > Pacotes só de tipos não entram aqui — vão em `devDependencies` no `package.json` do seu
 > projeto (como o `typescript` da seção de TypeScript acima).
+
+> Antes de escolher uma dependência, especialmente algo que compila código nativo (`sqlite3`,
+> `bcrypt`, `sharp`, etc.), vale conferir as [boas práticas](/docs/best-practices#dependências-nativas--cuidado-especialmente-pensando-em-android) —
+> essas costumam falhar pra instalar em quem roda o bot num Android via Termux.
 
 #### `externalDependencies`
 Programas externos que precisam estar instalados no sistema (ex: `yt-dlp`, `ffmpeg`):

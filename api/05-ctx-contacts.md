@@ -23,6 +23,22 @@ if (saved) await ctx.send.image(saved, "Foto de perfil.");
 > **`@lid`:** em grupos recentes o WhatsApp pode devolver IDs `@lid` (opacos, por privacidade).
 > Dentro de um handler de mensagem, prefira `ctx.msg.getContact()` — ele resolve isso sozinho.
 
+> **Retorna `null` pra contato "não confirmado":** `get()`/`getContact()` devolvem `null` (o
+> objeto inteiro, não só `pushname: null`) quando o ManyBot ainda não tem nenhum registro desse
+> JID — nem no cache de contatos, nem uma confirmação de que a conta existe. Isso é comum logo
+> no **primeiro** contato com um `@lid` novo (ex: alguém que acabou de entrar num grupo, ou uma
+> auto-conversa). A partir da primeira mensagem que essa pessoa manda, o ManyBot aprende o
+> `pushName` dela direto da própria mensagem — não depende só da sincronização de contatos do
+> WhatsApp, que pode demorar ou nunca rodar pra um `@lid` isolado. Ou seja: se `get()` te devolver
+> `null`, tenta de novo depois que a pessoa mandar pelo menos uma mensagem enquanto o bot estava
+> online; não é um erro pra reportar.
+
+> **`getPfpUrl()` não tem cache:** toda chamada bate na rede do WhatsApp (~150-350ms típico) — não
+> guarda em memória como o `getParticipants()`/`isAdmin()` de `ctx.chat` fazem. Evite chamar em
+> loop (ex: pra cada participante de um grupo grande) sem espaçar as chamadas. Também devolve
+> `null` tanto pra "contato sem foto" quanto pra falha de rede/timeout — não dá pra distinguir os
+> dois casos pelo retorno.
+
 ## Objeto de contato normalizado
 
 Mesma shape em `ctx.contacts.get()` e `ctx.msg.getContact()`:
