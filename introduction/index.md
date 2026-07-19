@@ -33,11 +33,6 @@ em projeto relacionados.
     - Codeberg: https://codeberg.org/many-bot/manyplug
     - CGit: https://git.stxerr.dev/manyplug.git
 
-- **ManyPlug Repository**: repositório de plugins do ManyBot
-    - GitHub: https://github.com/many-bot/manyplug-repo
-    - Codeberg: https://codeberg.org/many-bot/manyplug-repo
-    - CGit: https://git.stxerr.dev/manyplug-repo.git
-
 ### Como contribuir
 
 Depende de como gosta de contribuir. A seguir vamos demonstrar dois métodos: **pull requests** e **git patches**.
@@ -110,8 +105,7 @@ git am minha-correcao.patch
 
 ## Guias e tutoriais
 
-Iremos em breve fazer guias e tutoriais que te ensinam a utilizar e desenvolver com o ManyBot. Caso 
- queira ajudar nisso, abra a branch `draft/guides` do repositório.
+Confira nosso [canal no YouTube](https://youtube.com/@manybotyt).
 
 # Dúvidas?
 

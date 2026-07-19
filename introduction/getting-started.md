@@ -12,10 +12,10 @@ zero a um bot respondendo mensagens em poucos minutos.
 
 ## Índice
 
-- [O que você vai instalar](#o-que-você-vai-instalar)
-- [Linux](#instalação-linux)
-- [Windows](#instalação-windows)
-- [Android (Termux)](#instalação-android-termux)
+- [O que você vai instalar](#o-que-voce-vai-instalar)
+- [Linux](#instalacao-linux)
+- [Windows](#instalacao-windows)
+- [Android (Termux)](#instalacao-android-termux)
 - [Conectando o bot](#conectando-o-bot)
 - [Colocando o bot pra responder algo](#colocando-o-bot-pra-responder-algo)
 - [Problemas comuns (Windows)](#problemas-comuns-windows)
@@ -163,9 +163,11 @@ Use o [Termux](https://termux.dev/) — instale pela [F-Droid](https://f-droid.o
 ou pelo [GitHub](https://github.com/termux/termux-app/releases) (**não** use a versão da Play
 Store, ela está desatualizada e sem suporte).
 
+Recomendamos o uso do Node.js LTS no Termux, que tem mais suporte que a versão travada dele.
+
 ```bash
 pkg update && pkg upgrade
-pkg install nodejs
+pkg install nodejs-lts
 ```
 
 Confirme a versão instalada:
@@ -173,10 +175,6 @@ Confirme a versão instalada:
 ```bash
 node -v   # precisa ser 24.x ou mais recente
 ```
-
-> Se o pacote `nodejs` do repositório do Termux estiver numa versão abaixo da 24, procura por um
-> pacote alternativo mais novo (ex: `nodejs-lts`) ou usa o [nvm](https://github.com/nvm-sh/nvm),
-> que funciona normalmente dentro do Termux.
 
 Instale o **ManyBot** e o **ManyPlug** normalmente:
 
@@ -255,12 +253,6 @@ manyplug install --local .
 ```
 
 Isso instala um plugin que responde `Pong!` para a mensagem `!ping`.
-
-De qualquer forma, depois de instalar, ative o plugin:
-
-```bash
-manyplug enable <plugin>
-```
 
 O ManyBot detecta a mudança automaticamente — **não precisa reiniciar** — e passa a carregar o
 plugin em poucos segundos. Envie a mensagem correspondente (ex: `!ping`, com o prefixo padrão `!`)
