@@ -5,15 +5,15 @@ seja num servidor Linux, num Windows, ou num celular Android via Termux.
 
 ## Índice
 
-- [Dependências nativas — cuidado, especialmente pensando em Android](#dependências-nativas--cuidado-especialmente-pensando-em-android)
-- [Não bloqueie o event loop](#não-bloqueie-o-event-loop)
-- [Guarde estado onde ele sobrevive a reinício](#guarde-estado-onde-ele-sobrevive-a-reinício)
-- [Não brigue com o guardOptions sem motivo](#não-brigue-com-o-guardoptions-sem-motivo)
+- [Dependências nativas — cuidado, especialmente pensando em Android](#dependencias-nativas-cuidado-especialmente-pensando-em-android)
+- [Não bloqueie o event loop](#nao-bloqueie-o-event-loop)
+- [Guarde estado onde ele sobrevive a reinício](#guarde-estado-onde-ele-sobrevive-a-reinicio)
+- [Não brigue com o guardOptions sem motivo](#nao-brigue-com-o-guardoptions-sem-motivo)
 - [Evite loops com fromMe](#evite-loops-com-fromme)
-- [Trate `null` como resposta normal, não exceção](#trate-null-como-resposta-normal-não-exceção)
+- [Trate `null` como resposta normal, não exceção](#trate-null-como-resposta-normal-não-excecao)
 - [Mantenha `manyplug.json` enxuto](#mantenha-manyplugjson-enxuto)
-- [Não hardcode número/JID](#não-hardcode-númerojid)
-- [Locale, mesmo que só em português](#locale-mesmo-que-só-em-português)
+- [Não hardcode número/JID](#nao-hardcode-numerojid)
+- [Locale, mesmo que só em português](#locale-mesmo-que-so-em-português)
 
 ---
 

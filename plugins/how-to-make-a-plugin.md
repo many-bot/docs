@@ -11,7 +11,7 @@ Caso ainda não leu [sobre os plugins](/docs/about-plugins), é recomendado ler 
 ## Índice
 
 - [Exemplo mínimo](#exemplo-minimo)
-- [TypeScript & Language Server Protocol (LSP)](#typescript--language-server-protocol-lsp)
+- [TypeScript & Language Server Protocol (LSP)](#typescript)
 - [Estrutura padrão de um plugin](#estrutura-padrao-de-um-plugin)
     - [index.js](#indexjs)
     - [manyplug.json](#manyplugjson)
@@ -55,7 +55,7 @@ tudo configurado pra você.
 
 ```js
 /**
- * @param {import('@manybot/types').PluginContext} ctx
+ * @param {import('@manybot/types/en').PluginContext} ctx
  */
 export default async function (ctx) {
   // autocomplete funciona aqui ✅
@@ -68,6 +68,8 @@ export default async function (ctx) {
 `manyplug init` já adiciona `@manybot/types` como `devDependency` no `package.json` gerado —
 rode `npm install` no diretório do plugin e o autocomplete funciona direto, sem nenhum arquivo
 de tipos local.
+
+O types tem dois idiomas, use entre `@manybot/types/en` e `@manybot/types/pt`.
 
 ### TypeScript (recomendado para projetos maiores)
 
