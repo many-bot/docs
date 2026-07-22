@@ -48,7 +48,7 @@ export default async function (ctx) {
 ### Setup com notificação
 
 ```js
-const ADMIN = "5511999999999@s.whatsapp.net";
+const ADMIN = "5511999999999@c.us";
 
 export async function setup(ctx) {
   ctx.log.success("meu-plugin carregado.");
@@ -112,5 +112,6 @@ export async function setup(ctx) {
       await ctx.send.to(chatId).text("Bom dia! ☀️");
     }
   });
+  // schedule() retorna { stop() } — guarde a referência se algum dia precisar cancelar
 }
 ```

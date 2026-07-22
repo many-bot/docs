@@ -8,14 +8,14 @@
   {
     "label": "Uso",
     "items": [
-      { "slug": "getting-started", "label": "Primeiros passos" }
+      { "slug": "getting-started", "label": "Primeiros passos" },
+      { "slug": "config",          "label": "Configuração (manybot.toml)" }
     ]
   },
   {
     "label": "Bot oficial",
     "items": [
-      { "slug": "official-bot-about",    "label": "Sobre o bot oficial" },
-      { "slug": "official-bot-commands", "label": "Todos os comandos" }
+      { "slug": "official-bot-about",    "label": "Sobre o bot oficial" }
     ]
   },
   {

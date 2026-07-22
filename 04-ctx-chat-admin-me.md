@@ -6,7 +6,7 @@ Informações do chat atual (runtime only, já filtrado pela lista de permitidos
 ctx.chat.id;                          // string
 ctx.chat.name;                        // string
 ctx.chat.isGroup;                     // boolean
-await ctx.chat.getParticipants();     // [] em privado
+await ctx.chat.getParticipants();     // [] em privado — [{ id, isAdmin, isSuperAdmin }] em grupo
 await ctx.chat.isAdmin(contactId);    // false em privado
 await ctx.chat.isSenderAdmin();       // atalho pra isAdmin(ctx.msg.sender)
 await ctx.chat.isBotAdmin();          // cheque antes de usar ctx.admin.*
@@ -44,13 +44,20 @@ await ctx.admin.demote(memberIds);
 await ctx.admin.setSubject("Novo Nome");
 await ctx.admin.setDescription("...");
 await ctx.admin.setProfilePic("/tmp/foto.jpg"); // ou Buffer
-const link = await ctx.admin.getInviteLink();
+const link = await ctx.admin.getInviteLink();          // grupo atual
+const outroLink = await ctx.admin.getInviteLink(groupId); // outro grupo, por ID
 await ctx.admin.revokeInvite();
 ```
 
-> Só `add()` é encadeável com `.to(groupId)` pra mirar outro grupo — é o único método admin
-> disponível no `setup()` (onde não existe um chat "atual"). Os demais (`kick`, `promote`,
-> `setSubject`, etc.) sempre operam no chat atual e exigem contexto de runtime.
+> `kick`/`add`/`promote`/`demote` **lançam erro** se o WhatsApp rejeitar a operação pra qualquer
+> um dos IDs informados (ex: sem permissão, já é membro, privacidade do contato) — não falham
+> silenciosamente. Envolva em `try/catch` se quiser tratar isso ao invés de deixar propagar pro
+> guard de erro do plugin (veja [guardOptions](/docs/01-plugins-basic/#guardoptions)).
+
+> Só `add()` é encadeável com `.to(groupId)` pra mirar outro grupo. `getInviteLink()` também
+> funciona no `setup()` **se** você passar um `groupId` explícito (não depende de chat atual). Os
+> demais (`kick`, `promote`, `setSubject`, etc.) sempre operam no chat atual e exigem contexto de
+> runtime.
 
 Guard padrão de comando admin:
 

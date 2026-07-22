@@ -132,7 +132,9 @@ meu-plugin/
     └── pt.json
 ```
 
-> O comando `manyplug init` monta essa estrutura automaticamente. Veja [manyplug init](/docs/manyplug-cli/#init).
+> O comando `manyplug init` monta essa estrutura automaticamente — e sempre **pergunta o nome do
+> autor** interativamente (usado pra montar `key`), além do idioma (`--lang`) se você não passar
+> essa flag. Veja [manyplug init](/docs/manyplug-cli/#init).
 
 ---
 
@@ -189,7 +191,7 @@ mesmo em plugins privados.
   "version": "1.0.0",
   "description": "Meu plugin legal pro ManyBot.",
   "category": "utility",
-  "service": false,
+  "manybotVersion": ">=5.0.0",
   "author": {
     "name": "eu",
     "email": "meu@email.com",
@@ -199,7 +201,7 @@ mesmo em plugins privados.
   "repo": "https://github.com/eu/meu-plugin.many",
   "main": "index.js",
   "dependencies": {
-    "dependencia-npm": ">=10"
+    "outroautor/outro-plugin": "*"
   },
   "externalDependencies": {
     "ffmpeg": {
@@ -213,7 +215,9 @@ mesmo em plugins privados.
 ### Campos
 
 #### `name` *(obrigatório)*
-Nome do plugin. Deve conter apenas letras minúsculas, números e hífens. Deve ser único por autor.
+Nome do plugin. Letras minúsculas, números, pontos, hífens e underscores — precisa começar e
+terminar com letra ou número. Deve ser único por autor. `manyplug init` já valida isso ao
+perguntar o nome; `manyplug validate` aplica a mesma regra depois.
 
 #### `version` *(obrigatório)*
 Versão atual do plugin. Use o formato que preferir — SemVer, CalVer, tanto faz.
@@ -238,8 +242,15 @@ Categoria do plugin. Valores possíveis:
 | `tools`       | Utilitários técnicos (ex: conversores, geradores)         |
 
 #### `key`
-Chave global no formato `autor/nome`. Usada para referenciar o plugin no `mpindex` e em
-dependências de outros plugins. Sem ela, o ManyPlug instala em `manydev/<nome>` e o `validate` vai reclamar.
+Chave global no formato `autor/nome`, onde `nome` segue a mesma regra do campo `name` acima (e
+precisa ser idêntico a ele). Usada para referenciar o plugin no `mpindex` e em dependências de
+outros plugins. Sem ela, o ManyPlug instala em `manydev/<nome>` e o `validate` vai reclamar.
+
+#### `manybotVersion`
+String livre indicando a(s) versão(ões) do ManyBot com que o plugin é compatível (ex:
+`">=5.0.0"`). Opcional — se ausente, `manyplug validate` não faz essa checagem. Se presente, o
+`validate` compara com a versão do ManyBot instalada e avisa em caso de incompatibilidade ou se
+não conseguir detectar uma instalação.
 
 #### `description`
 Descrição curta do que o plugin faz. Exibida na listagem do registro.
@@ -251,34 +262,38 @@ Informações do autor. Somente `name` é obrigatório. Aceita também uma strin
 [Licença de código aberto](https://www.freecodecamp.org/portuguese/news/como-funcionam-as-licencas-de-codigo-aberto-e-como-adiciona-las-a-seus-projetos-2/)
 do plugin — define como o código pode ser distribuído e modificado por outros.
 
-## `repo`
+#### `repo`
 Repositório Git do seu plugin. Deve ser apenas um e pode ser de qualquer forja e serviço (ex. GitHub, GitLab).
 Não é obrigatório, serve apenas de identificação quando for publicado.
-
-#### `service`
-`true` se o plugin roda em background como um serviço (sem comandos diretos, ex: um monitor
-que envia alertas periódicos). `false` se é acionado por comandos do usuário. Padrão: `false`.
 
 #### `main`
 Nome do arquivo de entrada. Normalmente `"index.js"`. Se omitido, o ManyBot procura por `index.js`.
 
 #### `dependencies`
-Pacotes npm necessários **em runtime**. O ManyPlug os instala automaticamente ao instalar o
-plugin:
+**Não é para pacotes npm** — isso é o `package.json` (próxima seção). Esse campo lista **outros
+plugins do ManyBot** que o seu usa via [`ctx.plugins.require()`](/docs/08-ctx-utilities/#ctxplugins):
 
 ```json
 {
   "dependencies": {
-    "nome-do-pacote": ">=1.0.0"
+    "outroautor/outro-plugin": "*"
   }
 }
 ```
 
-> Pacotes só de tipos não entram aqui — vão em `devDependencies` no `package.json` do seu
-> projeto (como o `typescript` da seção de TypeScript acima).
+O `manyplug validate` escaneia seu código à procura de chamadas `ctx.plugins.require("chave")` e:
+- Se encontrar uma chamada pra uma chave que não está listada aqui, **adiciona ela sozinho**
+  nesse campo do seu `manyplug.json`.
+- Se uma chave estiver listada aqui mas nunca for usada em `ctx.plugins.require()`, avisa que a
+  dependência parece não utilizada.
 
-> Antes de escolher uma dependência, especialmente algo que compila código nativo (`sqlite3`,
-> `bcrypt`, `sharp`, etc.), vale conferir as [boas práticas](/docs/best-practices#dependências-nativas--cuidado-especialmente-pensando-em-android) —
+O ManyPlug **não instala essas dependências automaticamente** — ele só avisa, no `install` e no
+`validate`, se algum plugin listado aqui não estiver instalado. Cabe a quem instala rodar
+`manyplug install` pra cada um.
+
+> Antes de escolher uma dependência **npm** (que vai no `package.json`, não aqui), especialmente
+> algo que compila código nativo (`sqlite3`, `bcrypt`, `sharp`, etc.), vale conferir as
+> [boas práticas](/docs/best-practices#dependências-nativas--cuidado-especialmente-pensando-em-android) —
 > essas costumam falhar pra instalar em quem roda o bot num Android via Termux.
 
 #### `externalDependencies`
@@ -317,8 +332,20 @@ Node.js trate seus arquivos como ESM (o formato que o ManyBot usa):
 }
 ```
 
-Se seu plugin tiver dependências npm, elas também aparecem aqui — mas o ManyPlug gerencia isso
-para você automaticamente a partir do `manyplug.json`.
+Se seu plugin tiver dependências **npm** (bibliotecas de verdade, não outros plugins — isso é o
+`dependencies` do `manyplug.json`, seção anterior), declare elas aqui, do jeito normal do npm:
+
+```json
+{
+  "type": "module",
+  "dependencies": {
+    "nome-do-pacote": "^1.0.0"
+  }
+}
+```
+
+O ManyPlug roda `npm install` nesse diretório automaticamente ao instalar seu plugin (e também
+ao usar `manyplug link`) — quem instala não precisa fazer nada manualmente.
 
 ---
 
@@ -442,8 +469,12 @@ manyplug validate .
 manyplug install --local .
 ```
 
-O `validate` checa campos obrigatórios, tipos, entry point, locale e dependências externas.
-Corrija tudo que ele apontar antes de continuar. Depois confirme que o plugin funciona
+O `validate` checa bem mais do que campos obrigatórios: tipos, entry point, `manybotVersion`,
+locale, dependências npm e de outros plugins (e chega a **completar sozinho** o campo
+`dependencies` se detectar `ctx.plugins.require()` no seu código), dependências externas, e até
+uso incorreto do `ctx` no seu código. Veja a lista completa em
+[manyplug validate](/docs/manyplug-cli/#validate). Corrija tudo que ele apontar como erro antes
+de continuar — avisos não bloqueiam, mas vale revisar. Depois confirme que o plugin funciona
 rodando o bot normalmente.
 
 ### 2. Crie um repositório Git

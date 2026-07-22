@@ -11,4 +11,4 @@ Ela é hospedada em um servidor Ubuntu Server, com 2 vCPU e 4GB de RAM.
 # Posso adicionar a Many em um grupo?
 
 Tecnicamente, sim. Porém na prática, você deve ter em mente que ela não vai ter
-funções personalizadas, apenas as pré-definidas, que são listadas na [próxima página dessa seção](/docs/official-bot-commands).
+toda a liberdade que terá com o framework.

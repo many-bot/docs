@@ -8,7 +8,7 @@ Duas variantes, dependendo de onde ele é passado.
 export async function setup(ctx) {
   // sem ctx.msg, ctx.chat
   // ctx.send só tem .to(chatId) — não tem chat "atual"
-  await ctx.send.to("5511999999999@s.whatsapp.net").text("Bot online!");
+  await ctx.send.to("5511999999999@c.us").text("Bot online!");
 }
 ```
 
@@ -47,6 +47,7 @@ export default async function (ctx) {
 | [`ctx.chat`](/docs/04-ctx-chat-admin-me/#ctxchat) | ❌ | ✅ |
 | [`ctx.admin`](/docs/04-ctx-chat-admin-me/#ctxadmin) (demais métodos) | ❌ | ✅ |
 | [`ctx.poll`](/docs/07-ctx-polls/) | ❌ | ✅ |
+| [`ctx.wa`](/docs/08-ctx-utilities/#ctxwa) (escape hatch, socket/store/msg crus) | ❌ | ✅ |
 
 > `ctx.events` só existe no setup — registrar listener dentro do handler de mensagem criaria um
 > listener novo a cada mensagem.

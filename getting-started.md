@@ -216,17 +216,21 @@ manybot
 Na primeira execução, o ManyBot:
 
 1. Cria a pasta de configuração em `~/.manybot/` (no Windows, `C:\Users\SeuUsuário\.manybot\`),
-   com o arquivo `manybot.toml` dentro — é nele que fica toda a configuração do bot.
+   com o arquivo `manybot.toml` dentro — é nele que fica toda a configuração do bot (veja a
+   [referência completa](/docs/config)).
 2. Pergunta como você quer conectar: **escanear um QR Code** ou **receber um código de pareamento**
    no número de telefone. Essa escolha fica salva, então só é perguntada uma vez.
    - **QR Code**: abra o WhatsApp no celular, vá em **Configurações → Dispositivos conectados →
      Conectar um dispositivo** e escaneie o código exibido no terminal.
    - **Código de pareamento**: informe o número com DDI ao ser perguntado, e digite o código
      recebido no WhatsApp, na mesma tela de **Conectar um dispositivo**.
-3. Depois de conectado, o bot fica online e escutando mensagens.
+3. Depois de conectado, o bot fica online e escutando mensagens de **qualquer conversa** em que a
+   conta participe — veja [`CHATS`](/docs/config#chats--restringindo-onde-o-bot-responde) se
+   quiser restringir a chats específicos.
 
-> Os arquivos de sessão ficam salvos em `~/.manybot/sessions/`. Não compartilhe essa pasta com
-> ninguém — quem tiver acesso a ela pode controlar sua conta do WhatsApp.
+> Os arquivos de sessão ficam salvos em `~/.manybot/sessions/manybot/` (o nome da subpasta segue
+> `CLIENT_ID`, `"manybot"` por padrão). Não compartilhe essa pasta com ninguém — quem tiver acesso
+> a ela pode controlar sua conta do WhatsApp.
 
 Pra manter o bot rodando em segundo plano (e reconectar sozinho se cair), use um gerenciador de
 processos como o [pm2](https://pm2.keymetrics.io/) — isso é opcional, o `manybot` sozinho já
@@ -258,10 +262,14 @@ O ManyBot detecta a mudança automaticamente — **não precisa reiniciar** — 
 plugin em poucos segundos. Envie a mensagem correspondente (ex: `!ping`, com o prefixo padrão `!`)
 em qualquer conversa com o número conectado, e o bot deve responder.
 
-> Prefixo, idioma e outras preferências ficam em `~/.manybot/manybot.toml`. Edite o arquivo e as
-> mudanças são aplicadas automaticamente, sem precisar reiniciar o bot.
+> `CMD_PREFIX`, `CHATS` e a maior parte das outras chaves em `~/.manybot/manybot.toml` são
+> aplicadas automaticamente ao editar o arquivo, sem reiniciar o bot. A exceção é `LANGUAGE`
+> (idioma das traduções), que exige reiniciar — veja [Configuração](/docs/config) pra detalhes de
+> cada chave.
 
 A partir daqui:
+- Veja [Configuração](/docs/config) pra todas as chaves de `manybot.toml`, incluindo como
+  restringir o bot a chats específicos.
 - Veja [sobre os plugins](/docs/about-plugins) e o [ManyPlug CLI](/docs/manyplug-cli) pra explorar
   mais o gerenciador.
 - Veja [como fazer um plugin](/docs/how-to-make-a-plugin) se quiser desenvolver o seu próprio.

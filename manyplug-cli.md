@@ -20,13 +20,19 @@ Cria o esqueleto de um novo plugin, pluginpack ou profile.
 manyplug init <nome>
 ```
 
+`init` sempre pergunta interativamente o **nome do autor** (usado pra montar a `key` do plugin,
+`autor/nome`) — não tem flag pra isso. Se o diretório `<nome>` já existir, pergunta antes de
+sobrescrever.
+
 ### Opções
 
 - `-c`, `--category <cat>` — categoria do plugin: `integration`, `games`, `media`, `utility`,
   `admin`, `fun`, `moderation`, `ai`, `education`, `social`, `economy`, `automation`, `tools`
-  (padrão: `utility`)
+  (padrão: `utility`; categoria inválida gera aviso e cai pro padrão)
 - `-t`, `--type <tipo>` — `plugin`, `pluginpack` ou `profile` (padrão: `plugin`)
-- `--lang <lang>` — linguagem do plugin: `js` ou `ts`. Se omitido, é perguntado interativamente.
+- `--lang <lang>` — linguagem do plugin: `js` ou `ts`. Se omitido (ou inválido), é perguntado
+  interativamente — Enter sem digitar nada assume `js`. Não se aplica a `--type profile`
+  (profiles não têm código).
 
 ### Estrutura gerada (plugin, JavaScript)
 
@@ -76,6 +82,14 @@ Em ambos os casos (JS ou TS), o pacote `@manybot/types` (adicionado como `devDep
 JSDoc, ou `import type { PluginContext } from "@manybot/types"` em TS) pra ter autocomplete no
 seu editor. Veja a [Referência da API](/docs/00-index) pra saber o que cada parte de `ctx` faz.
 
+### `--type pluginpack` / `--type profile`
+
+Com `--type pluginpack`, o `init` também gera uma subpasta `example-plugin/` com um plugin de
+exemplo completo (mesma estrutura de um plugin normal), mostrando como organizar os demais. Com
+`--type profile`, gera só o `manyplug.json` com `"plugins": []` pra você preencher — sem
+`index.js`/`package.json`, já que profiles não têm código. Ambos vêm com um `README.md` já
+explicando o formato.
+
 ---
 
 ## install
@@ -101,6 +115,16 @@ manyplug install --local <caminho>
 - `-y`, `--yes` — pula confirmação
 
 > Plugins sem `key` no `manyplug.json` são instalados em `manydev/<nome>`. Adicione `"key": "autor/nome"` para evitar isso.
+
+Aceita o nome curto (`manyplug install figurinha`) se for único no registry — havendo mais de um
+autor com um plugin de mesmo nome, o comando lista as opções e pede a key completa
+(`autor/figurinha`). Instalar um plugin cujo nome curto já pertence a outro plugin diferente
+(outro autor) já instalado é recusado, pra evitar ambiguidade.
+
+O download é feito num diretório temporário e só é movido pro lugar final depois de validado —
+uma instalação cancelada ou que falhe no meio não deixa um plugin quebrado pra trás. Se o
+registry tiver mais de um espelho pro mesmo plugin (ex: Codeberg e GitHub), o `install` tenta o
+próximo automaticamente se um falhar.
 
 ### Pluginpacks e profiles
 
@@ -145,7 +169,8 @@ manyplug s figurinha
 
 - `-c`, `--category <cat>` — filtra por categoria
 
-Plugins já instalados aparecem marcados como `[installed]` no resultado.
+Plugins já instalados aparecem marcados como `[installed]` no resultado; entradas do tipo
+pluginpack ou profile aparecem marcadas como `[pluginpack]`/`[profile]`.
 
 ---
 
@@ -177,6 +202,9 @@ manyplug ls --all
 ### Opções
 
 - `-a`, `--all` — inclui plugins desativados
+
+A listagem mostra nome, versão, categoria e status — que pode ser `enabled`, `disabled` ou
+`incomplete` (o arquivo de entrada declarado em `main` não existe mais no disco).
 
 ---
 
@@ -224,31 +252,70 @@ manyplug rm <plugin>
 
 ### Opções
 
-- `-y`, `--yes` — pula confirmação de remoção do plugin
-- `-Y` — pula também a confirmação de remoção dos dados
+- `-y`, `--yes` — pula confirmação de remoção do plugin (a confirmação de remoção dos dados
+  continua sendo perguntada)
+- `-Y` — pula **as duas** confirmações (plugin e dados) sozinho, sem precisar de `-y` junto
 
 ---
 
 ## validate
 
-Valida o `manyplug.json` de um plugin, pluginpack ou profile local — campos obrigatórios, tipos,
-entry point, locale, dependências externas e uso de `ctx` no código. Alias: `val`.
+Valida um plugin, pluginpack ou profile local. Alias: `val`.
 
 ```bash
 manyplug validate [caminho]   # padrão: .
 ```
 
+Checagens no `manyplug.json`:
+- Campos obrigatórios (`name`, `version`, `category`) e tipos de todos os campos conhecidos.
+- Campo não reconhecido no manifesto → aviso.
+- `name`/`key` seguem o formato descrito em [manyplug.json](/docs/how-to-make-a-plugin/#manyplugjson); se `key` estiver presente, sua parte depois da `/` precisa bater com `name`.
+- `manybotVersion`, se presente, é comparado com a versão do ManyBot instalada.
+- Entry point (`main`) existe no disco.
+- Pluginpacks: cada subpasta precisa ter seu próprio `manyplug.json` válido — pack sem nenhum
+  subplugin é erro. Profiles: `plugins` precisa ser uma lista não vazia de keys.
+
+Checagens de dependências:
+- `package.json` → cada dependência declarada tem uma pasta correspondente em `node_modules`
+  (aviso se faltando — rode `npm install`).
+- `manyplug.json`'s `dependencies` (outros plugins) → compara com o que o código realmente usa via
+  `ctx.plugins.require()`: completa automaticamente uma dependência detectada no código mas
+  ausente do manifesto, e avisa sobre uma dependência declarada mas nunca usada.
+- `externalDependencies` → cada `command` é procurado no `PATH`. Faltando: erro se `optional`
+  for `false`/omitido (bloqueia, sai com código 1); aviso se `optional: true`.
+- O código também é escaneado por chamadas a `exec`/`execSync`/`execFile`/`execFileSync`/`spawn`/
+  `spawnSync` com um binário literal (ex: `execSync("ffmpeg ...")`) — mesmo que esse binário não
+  esteja em `externalDependencies`, o `validate` avisa se ele não estiver no `PATH`.
+
+Checagens de `locale/`:
+- Todos os arquivos de idioma existem e são JSON válido.
+- As mesmas chaves existem em todos os idiomas — chave presente num arquivo e ausente em outro
+  gera aviso, pra pegar traduções esquecidas.
+
+Checagens de uso de `ctx` no código:
+- Desestruturação (`const { x } = ctx`) e acesso direto (`ctx.x`, `ctx.x.y`) são comparados com as
+  chaves e métodos reais da API — nome errado ou digitado errado gera aviso.
+- Chamar `ctx.send(...)` ou `ctx.msg.reply(...)` diretamente (em vez de `ctx.send.text(...)`,
+  `ctx.msg.reply.text(...)`, etc.) é detectado e sinalizado.
+
+Qualquer **erro** (não aviso) faz o comando sair com código 1 — útil pra travar CI/hooks de
+publicação.
+
 ---
 
 ## info
 
-Mostra detalhes de um plugin instalado: versão, categoria, tipo, status, tamanho, dados e dependências.
+Mostra detalhes de um plugin instalado: nome, key, versão, categoria, autor, licença, repo, tipo,
+status, arquivo de entrada (`main`), caminho no disco, tamanho, diretório de dados (e tamanho, ou
+"nenhum"), descrição, dependências (outros plugins, com versão) e dependências externas.
 
 ```bash
 manyplug info <plugin>
 ```
 
-Aceita nome curto (`meu-plugin`) ou chave completa (`autor/meu-plugin`).
+Aceita nome curto (`meu-plugin`) ou chave completa (`autor/meu-plugin`) — mesma resolução usada
+por `enable`/`disable`/`remove`/`install`: se o nome curto for ambíguo entre plugins de autores
+diferentes, é pedida a key completa.
 
 ---
 
@@ -261,7 +328,9 @@ manyplug version           # exibe a versão atual
 manyplug version 1.2.0     # atualiza para 1.2.0
 ```
 
-> Pode ser qualquer string, não precisa seguir semver.
+> Pode ser qualquer string, não precisa seguir semver. Diferente de `validate`, não aceita um
+> caminho — sempre opera no `manyplug.json` do diretório atual (`cd` até a pasta do plugin antes
+> de rodar).
 
 ---
 
@@ -270,6 +339,20 @@ manyplug version 1.2.0     # atualiza para 1.2.0
 ```bash
 manyplug help
 manyplug help <comando>
+```
+
+Rodar `manyplug` sem nenhum argumento também mostra essa ajuda. Note que `-h`/`--help` **não**
+funcionam (ao contrário da maioria das CLIs) — use `help` mesmo.
+
+### `-v`, `--version`
+
+Mostra a versão instalada do ManyPlug e sai — funciona em qualquer lugar, não precisa estar
+numa pasta de plugin (diferente de `manyplug version`, que é sobre o `manyplug.json` do plugin
+atual).
+
+```bash
+manyplug --version
+manyplug -v
 ```
 
 ---
@@ -287,3 +370,7 @@ lista de plugins ativos (gerenciada por `enable`/`disable`) e algumas preferênc
 
 O idioma também pode ser sobrescrito por comando com a variável de ambiente `MANYPLUG_LANG`
 (útil pra scripts e CI), sem precisar editar o arquivo.
+
+> O ManyPlug também mantém um cache interno em `~/.manybot/registry.json` (metadados de
+> instalação — o que foi instalado local/linkado/via qual profile). Não é pra editar à mão; se
+> parecer corrompido ou desatualizado, é seguro apagar — ele é reconstruído na próxima operação.

@@ -6,7 +6,7 @@ API de envio. Todo método retorna um `MessageHandle` (thenable) com ações enc
 // chat atual (runtime only)
 await ctx.send.text("Olá!");
 await ctx.send.text("https://exemplo.com", { linkPreview: false });
-await ctx.send.text("Olá @user", { mentions: ["5511999999999@s.whatsapp.net"] });
+await ctx.send.text("Olá @user", { mentions: ["5511999999999@c.us"] });
 
 await ctx.send.image("/tmp/foto.jpg", "legenda");
 await ctx.send.image("/tmp/foto.jpg", "secreta", { viewOnce: true });
@@ -42,7 +42,9 @@ const handle = await ctx.send.image("/tmp/x.jpg"); // handle = Message enviada
 await handle.delete();
 ```
 
-`delete(forEveryone? = true)` e `react(emoji)` retornam `Promise`.
+`delete(forEveryone? = true)` e `react(emoji)` retornam `Promise`. Hoje, `delete(false)`
+("apagar só pra mim") **não faz nada** — só `delete()`/`delete(true)` (apagar pra todos)
+realmente tem efeito.
 
 > `pin(duration?)` também existe na interface, mas atualmente **não tem efeito** — o Baileys (a
 > biblioteca por trás da conexão com o WhatsApp) ainda não suporta fixar mensagens, então chamar
@@ -50,6 +52,12 @@ await handle.delete();
 
 > **send vs reply:** `ctx.send.*` manda sem citar nada. `ctx.msg.reply.*` cita a mensagem que
 > disparou o handler — prefira `reply` em grupos.
+
+> **`ctx.send.to()` dentro de um handler** não aplica `cooldown`/`jitter` do `guardOptions` do
+> seu plugin (só o limite global de envios continua valendo) — é assim porque `.to()` normalmente
+> serve pra notificar outro chat, não o atual. Já em `setup()`, `ctx.send.to()` aplica
+> `cooldown`/`jitter` normalmente (os padrões, `true`/`true`, já que não há `guardOptions` de
+> chat nenhum nesse ponto).
 
 ---
 
@@ -61,7 +69,7 @@ Contexto da mensagem que disparou o handler (runtime only).
 ctx.msg.body;         // string — texto completo
 ctx.msg.type;         // "chat" | "image" | "video" | "audio" | ...
 ctx.msg.fromMe;       // true se enviada pelo próprio bot
-ctx.msg.sender;       // ID de quem enviou
+ctx.msg.sender;       // ID de quem enviou — ex: "5511999999999@c.us"
 ctx.msg.senderName;   // nome de exibição
 ctx.msg.command;      // primeira palavra, sem prefixo, minúscula
 ctx.msg.args;         // string[] — palavras após o comando
@@ -70,6 +78,13 @@ ctx.msg.isGif;        // boolean
 ctx.msg.hasReply;     // true se é resposta a outra msg
 ctx.msg.hasPrefix;    // true se começa com CMD_PREFIX
 ```
+
+> **Formato de ID:** o ManyBot normaliza conversas privadas pro sufixo `@c.us` (o formato que o
+> ManyBot já usava antes de migrar pro Baileys) em tudo que expõe a plugins — `ctx.msg.sender`,
+> `ctx.chat.id`, objetos de contato, `CHATS` no `manybot.toml`, etc. Grupos continuam com `@g.us`
+> normalmente. Use sempre `@c.us` ao montar ou comparar um ID de conversa privada manualmente —
+> um valor com `@s.whatsapp.net` (o formato nativo do Baileys) não vai bater numa comparação
+> `===` com `ctx.msg.sender`.
 
 ### Detectando comandos
 
@@ -141,10 +156,11 @@ if (ctx.msg.hasReply) {
 > `getReply()` não faz nenhuma chamada de rede — ele só reprocessa dados que a mensagem atual já
 > trouxe consigo (a citação vem embutida em `contextInfo`). Não tem delay associado a ele.
 
-> `quoted.senderName` mostra o nome de exibição real **se** o ManyBot já tiver visto essa pessoa
-> mandar alguma mensagem enquanto o bot estava online (o nome é aprendido ao vivo, mensagem por
-> mensagem — veja a nota sobre isso em [ctx.contacts](/docs/05-ctx-contacts/)). Se ela nunca
-> apareceu enquanto o bot estava rodando, cai pro número mesmo.
+> `quoted.senderName` **sempre** cai pro número de telefone — o protocolo de citação do WhatsApp
+> (`contextInfo`) não carrega o `pushName` de quem mandou a mensagem original, só o JID. Isso é
+> diferente do `ctx.contacts.get()`/`ctx.msg.getContact()`, que de fato aprende e guarda o nome
+> real ao vivo (veja a nota em [ctx.contacts](/docs/05-ctx-contacts/)) — mas `getReply()` não
+> passa por esse caminho, então não se beneficia disso.
 
 ### Contato do remetente
 

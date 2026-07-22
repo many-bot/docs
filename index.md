@@ -64,8 +64,8 @@ git push origin minha-correcao
 8. Abra a página do seu fork no GitHub/Codeberg.
 9. Clique em "Criar Pull Request".
 10. Escolha:
-- Base: manybot/master
-- Compare: seu-fork/minha-correcao
+- Base: `manybot/main`
+- Compare: `seu-fork/minha-correcao`
 11. Escreva uma descrição e envie.
 
 #### Git patches
@@ -109,4 +109,4 @@ Confira nosso [canal no YouTube](https://youtube.com/@manybotyt).
 
 # Dúvidas?
 
-Entre em contato via email (manybot@pm.me) ou entre na nossa comunidade do [WhatsApp](https://chat.whatsapp.com/KfOuIwhpQjN8fcZTMHmaGQ) ou [Discord](https://discord.gg/gC7aKChXmA).
+Entre em contato via email (manybot@pm.me) ou entre na nossa comunidade do [WhatsApp](https://wa.manybot.org) ou [Discord](https://discord.gg/gC7aKChXmA).

@@ -1,5 +1,14 @@
 # Termos de uso e privacidade
 
+> **Sobre o que é este documento:** a maior parte destes termos trata da **instância oficial**
+> hospedada pelo desenvolvedor (o número oficial, seções 2.1, 6 a 9, 13) e do **uso da marca/
+> identidade** do projeto (seção 12) — não do código-fonte em si. O código do ManyBot é
+> distribuído sob [GPLv3](https://www.gnu.org/licenses/gpl-3.0.pt-br.html), que já garante a
+> liberdade de rodar, estudar, modificar e redistribuir sua própria instância, inclusive
+> comercialmente — essa licença não é substituída por nada aqui. Onde uma seção fala
+> especificamente de instâncias auto-hospedadas (2.2), isso é sobre responsabilidade de uso, não
+> uma restrição adicional além da licença.
+
 ## Termos de Uso
 
 ### 1. Natureza do Software
@@ -144,9 +153,14 @@ O uso de plug-ins e forks de terceiros é de sua responsabilidade.
 
 ### 11. Uso comercial
 
-Este software é fornecido como freeware (software gratuito).
+Esta seção trata do uso da **instância e da marca oficiais** — não do código-fonte, que já é
+GPLv3 e pode ser usado comercialmente por qualquer um em sua própria instância (respeitando os
+termos da própria licença, incluindo redistribuir o código-fonte de qualquer versão modificada).
 
-O uso comercial não é permitido, a menos que o software seja significativamente modificado e renomeado.
+O acesso à instância oficial é fornecido como cortesia gratuita (freeware).
+
+Usar a instância oficial — ou a marca/identidade do projeto (seção 12) — para fins comerciais não
+é permitido, a menos que autorizado previamente pelo desenvolvedor.
 
 ---
 
@@ -216,5 +230,3 @@ O uso continuado do software implica a aceitação dos termos atualizados, mesmo
 Estes termos serão regidos e interpretados de acordo com as leis do Brasil.
 
 Quaisquer disputas decorrentes do uso deste software estarão sujeitas à jurisdição aplicável no Brasil.
-
-

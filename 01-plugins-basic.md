@@ -38,10 +38,20 @@ export const guardOptions = {
 
 | Opção      | Padrão | O que faz                                                        |
 |------------|--------|--------------------------------------------------------------------|
-| `timeout`  | `true` | Desativa o plugin se ele não terminar em 2 minutos.                |
-| `typing`   | `true` | Mostra "digitando…"/"gravando áudio…" durante a execução.          |
+| `timeout`  | `true` | Interrompe o plugin se ele não terminar em 2 minutos — tratado como o erro abaixo. |
+| `typing`   | `true` | Mostra "digitando…" enquanto o plugin processa a mensagem.         |
 | `cooldown` | `true` | Intervalo mínimo entre envios pro mesmo chat.                      |
 | `jitter`   | `true` | Delay aleatório antes de enviar, pra simular comportamento humano. |
+
+> **Erro não tratado (ou `timeout: true` estourando):** o kernel captura, loga um aviso e
+> **recarrega o plugin** — ele continua ativo e tenta de novo na próxima mensagem. Só depois de
+> **3 falhas seguidas** o plugin é desativado de verdade. Ou seja, um erro isolado não tira seu
+> plugin do ar; falhar toda vez, sim.
+
+> `typing: false` só desliga o indicador contínuo acima — um "digitando…" breve e proporcional
+> ao tamanho da mensagem ainda aparece em cada envio (`ctx.send`/`ctx.msg.reply`), independente
+> dessa opção. Hoje esse indicador é sempre "digitando…", mesmo enviando áudio — não existe um
+> indicador distinto de "gravando áudio…" implementado ainda.
 
 > Isso **não** impede banimento do WhatsApp — só mitiga alguns efeitos de detecção. Veja os
 > [Termos de Uso](/docs/terms-and-privacy/).

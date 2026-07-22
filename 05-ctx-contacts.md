@@ -12,7 +12,7 @@ await ctx.contacts.unblock(id);
 ```
 
 ```js
-const contact = await ctx.contacts.get("5511999999999@s.whatsapp.net");
+const contact = await ctx.contacts.get("5511999999999@c.us");
 if (contact) ctx.log.info(`Pushname: ${contact.pushname}`);
 
 const destPath = ctx.storage.resolve(`pfp_${contact.number}.jpg`);
@@ -45,7 +45,7 @@ Mesma shape em `ctx.contacts.get()` e `ctx.msg.getContact()`:
 
 ```ts
 {
-  id: string;             // "5511999999999@s.whatsapp.net"
+  id: string;             // "5511999999999@c.us"
   number: string;          // "5511999999999"
   pushname: string | null;
   name: string | null;     // salvo na sua agenda
@@ -61,9 +61,11 @@ Mesma shape em `ctx.contacts.get()` e `ctx.msg.getContact()`:
 }
 ```
 
-> `shortName`, `isBusiness`, `isEnterprise` e `isBlocked` hoje são sempre `null`/`false` — o
-> ManyBot ainda não deriva esses dados de verdade a partir do WhatsApp. Não confie neles pra
-> decisões (ex: não use `isBlocked` pra saber se um contato te bloqueou).
+> `shortName`, `isEnterprise` e `isBlocked` hoje são sempre `null`/`false` — o ManyBot ainda não
+> deriva esses dados de verdade a partir do WhatsApp. Não confie neles pra decisões (ex: não use
+> `isBlocked` pra saber se um contato te bloqueou). `isBusiness` é diferente: **é** checado de
+> verdade contra o WhatsApp (uma chamada extra de rede, só pra contatos individuais) — pode
+> confiar nele.
 
 ```js
 // Mencionar um contato

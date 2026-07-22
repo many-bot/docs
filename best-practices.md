@@ -11,7 +11,7 @@ seja num servidor Linux, num Windows, ou num celular Android via Termux.
 - [Não brigue com o guardOptions sem motivo](#nao-brigue-com-o-guardoptions-sem-motivo)
 - [Evite loops com fromMe](#evite-loops-com-fromme)
 - [Trate `null` como resposta normal, não exceção](#trate-null-como-resposta-normal-não-excecao)
-- [Mantenha `manyplug.json` enxuto](#mantenha-manyplugjson-enxuto)
+- [Mantenha dependências npm enxutas](#mantenha-dependências-npm-enxutas)
 - [Não hardcode número/JID](#nao-hardcode-numerojid)
 - [Locale, mesmo que só em português](#locale-mesmo-que-so-em-português)
 
@@ -70,9 +70,9 @@ aquela mensagem, porque o kernel despacha um por um. Trabalho pesado feito diret
 - Qualquer coisa que legitimamente demore mais que alguns segundos: responda algo tipo
   "processando..." e faça o trabalho pesado depois, mandando o resultado quando terminar via
   `ctx.send.to(chatId)` — não deixe o handler pendurado esperando.
-- Lembre que o `timeout` padrão do `guardOptions` desativa o plugin se ele não terminar em 2
-  minutos — é um sinal de que a tarefa deveria ser assíncrona/enfileirada, não um limite pra
-  tentar espremer.
+- Lembre que o `timeout` padrão do `guardOptions` interrompe o plugin se ele não terminar em 2
+  minutos, contando como uma falha (veja [guardOptions](/docs/01-plugins-basic/#guardoptions)) —
+  é um sinal de que a tarefa deveria ser assíncrona/enfileirada, não um limite pra tentar espremer.
 
 ---
 
@@ -111,19 +111,23 @@ comando com prefixo) sem checar `ctx.msg.fromMe` corre risco de responder a si m
 Várias APIs devolvem `null` em cenários legítimos e relativamente comuns, não só em erro:
 `ctx.msg.getContact()`, `ctx.contacts.get()`, `ctx.msg.getReply()`, `ctx.contacts.getPfpUrl()`.
 Assumir que o retorno sempre vem preenchido e acessar propriedade direto (`contact.pushname` sem
-checar `contact` antes) é a causa mais comum de plugin quebrando silenciosamente — o kernel
-desativa automaticamente um plugin que lança erro não tratado, então um `null` não tratado pode
-tirar seu plugin do ar até você reinstalar.
+checar `contact` antes) é a causa mais comum de plugin quebrando silenciosamente — um erro não
+tratado é recarregado automaticamente pelo kernel (veja
+[guardOptions](/docs/01-plugins-basic/#guardoptions)), mas se um `null` não tratado disparar erro
+em toda mensagem, seu plugin pode acabar desativado até alguém editar o arquivo (dispara reload)
+ou reiniciar o bot.
 
 ---
 
-## Mantenha `manyplug.json` enxuto
+## Mantenha dependências npm enxutas
 
-Cada entrada em `dependencies` é instalada via `npm` na máquina de **cada pessoa** que instalar
-seu plugin — servidor, desktop ou celular. Dependência a mais não é só peso: é mais uma
-superfície de instalação falhando (ver seção de dependências nativas acima), mais tempo de
-`manyplug install`, e mais coisa pra manter atualizada. Antes de adicionar uma lib pra resolver
-algo pequeno, considere se não dá pra fazer com o que o Node/`ctx.utils` já oferece.
+Cada entrada em `dependencies` do **`package.json`** (não confundir com o `dependencies` do
+`manyplug.json`, que é sobre outros plugins — veja
+[manyplug.json](/docs/how-to-make-a-plugin/#dependencies)) é instalada via `npm` na máquina de
+**cada pessoa** que instalar seu plugin — servidor, desktop ou celular. Dependência a mais não é
+só peso: é mais uma superfície de instalação falhando (ver seção de dependências nativas acima),
+mais tempo de `manyplug install`, e mais coisa pra manter atualizada. Antes de adicionar uma lib
+pra resolver algo pequeno, considere se não dá pra fazer com o que o Node/`ctx.utils` já oferece.
 
 ---
 
