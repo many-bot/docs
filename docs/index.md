@@ -1,4 +1,9 @@
-# ManyBot Docs
+---
+title: Introdução
+description: Documentação oficial do ManyBot — instalar, configurar, desenvolver, manter e contribuir.
+sidebar:
+  order: 0
+---
 
 Essa é a documentação oficial do ManyBot, aqui você vai encontrar tudo o que quer saber sobre o projeto,
  como instalar, como configurar, como desenvolver, manter e como contribuir para o desenvolvimento.

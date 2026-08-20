@@ -1,3 +1,10 @@
+---
+title: ctx.chat, ctx.admin & ctx.me
+description: Informações do chat atual, ações de administração de grupo e perfil do próprio bot.
+sidebar:
+  order: 4
+---
+
 # ctx.chat
 
 Informações do chat atual (runtime only, já filtrado pela lista de permitidos do `manybot.toml`).
@@ -52,7 +59,7 @@ await ctx.admin.revokeInvite();
 > `kick`/`add`/`promote`/`demote` **lançam erro** se o WhatsApp rejeitar a operação pra qualquer
 > um dos IDs informados (ex: sem permissão, já é membro, privacidade do contato) — não falham
 > silenciosamente. Envolva em `try/catch` se quiser tratar isso ao invés de deixar propagar pro
-> guard de erro do plugin (veja [guardOptions](/docs/01-plugins-basic/#guardoptions)).
+> guard de erro do plugin (veja [guardOptions](/docs/api/plugins-basic/#guardoptions)).
 
 > Só `add()` é encadeável com `.to(groupId)` pra mirar outro grupo. `getInviteLink()` também
 > funciona no `setup()` **se** você passar um `groupId` explícito (não depende de chat atual). Os

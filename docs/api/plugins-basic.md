@@ -1,4 +1,9 @@
-# Anatomia de um plugin
+---
+title: Anatomia de um plugin
+description: A função default, a função setup, e a camada anti-detecção/anti-ban (guardOptions) que envolve cada plugin.
+sidebar:
+  order: 1
+---
 
 ```js
 // plugins/meu-plugin/index.js
@@ -18,7 +23,7 @@ export default async function (ctx) {
 - `setup` (opcional) — chamado uma vez, na inicialização do bot.
 - Sem roteamento central: todo plugin ativo recebe toda mensagem e decide sozinho se age.
 
-Veja a diferença entre `ctx` de setup e de runtime em [ctx overview](/docs/02-ctx-overview/).
+Veja a diferença entre `ctx` de setup e de runtime em [ctx overview](/docs/api/ctx-overview/).
 
 ---
 

@@ -1,4 +1,9 @@
-# Termos de uso e privacidade
+---
+title: Termos de uso e privacidade
+description: Termos de uso da instância oficial e da marca ManyBot, além da política de privacidade — não substitui a GPLv3 do código-fonte.
+sidebar:
+  order: 8
+---
 
 > **Sobre o que é este documento:** a maior parte destes termos trata da **instância oficial**
 > hospedada pelo desenvolvedor (o número oficial, seções 2.1, 6 a 9, 13) e do **uso da marca/

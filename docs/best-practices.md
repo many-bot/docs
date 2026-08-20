@@ -1,4 +1,9 @@
-# Boas práticas em plugins
+---
+title: Boas práticas em plugins
+description: Recomendações pra plugins funcionarem bem em qualquer plataforma — dependências nativas, event loop, persistência, guardOptions, i18n.
+sidebar:
+  order: 7
+---
 
 Um apanhado de recomendações gerais pra escrever plugins que funcionam bem pra quem instala —
 seja num servidor Linux, num Windows, ou num celular Android via Termux.
@@ -71,7 +76,7 @@ aquela mensagem, porque o kernel despacha um por um. Trabalho pesado feito diret
   "processando..." e faça o trabalho pesado depois, mandando o resultado quando terminar via
   `ctx.send.to(chatId)` — não deixe o handler pendurado esperando.
 - Lembre que o `timeout` padrão do `guardOptions` interrompe o plugin se ele não terminar em 2
-  minutos, contando como uma falha (veja [guardOptions](/docs/01-plugins-basic/#guardoptions)) —
+  minutos, contando como uma falha (veja [guardOptions](/docs/api/plugins-basic/#guardoptions)) —
   é um sinal de que a tarefa deveria ser assíncrona/enfileirada, não um limite pra tentar espremer.
 
 ---
@@ -100,7 +105,7 @@ diretamente a mensagens) — não o pacote inteiro por padrão.
 
 ## Evite loops com fromMe
 
-Já é mencionado na [anatomia de um plugin](/docs/01-plugins-basic/), mas vale reforçar: o bot
+Já é mencionado na [anatomia de um plugin](/docs/api/plugins-basic/), mas vale reforçar: o bot
 recebe as próprias mensagens também. Qualquer handler que reage a mensagem "solta" (não só
 comando com prefixo) sem checar `ctx.msg.fromMe` corre risco de responder a si mesmo em loop.
 
@@ -113,7 +118,7 @@ Várias APIs devolvem `null` em cenários legítimos e relativamente comuns, nã
 Assumir que o retorno sempre vem preenchido e acessar propriedade direto (`contact.pushname` sem
 checar `contact` antes) é a causa mais comum de plugin quebrando silenciosamente — um erro não
 tratado é recarregado automaticamente pelo kernel (veja
-[guardOptions](/docs/01-plugins-basic/#guardoptions)), mas se um `null` não tratado disparar erro
+[guardOptions](/docs/api/plugins-basic/#guardoptions)), mas se um `null` não tratado disparar erro
 em toda mensagem, seu plugin pode acabar desativado até alguém editar o arquivo (dispara reload)
 ou reiniciar o bot.
 

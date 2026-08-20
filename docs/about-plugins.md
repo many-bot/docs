@@ -1,4 +1,9 @@
-# Sobre os plugins
+---
+title: Sobre os plugins
+description: O que é um plugin do ManyBot, como descobrir e instalar via ManyPlug, e onde os plugins ficam no disco.
+sidebar:
+  order: 4
+---
 
 Cada funcionalidade do ManyBot é um plugin independente. Isso permite que desenvolvedores façam
 suas próprias funcionalidades para bots sem tocar no core do sistema — o ManyBot sozinho não tem

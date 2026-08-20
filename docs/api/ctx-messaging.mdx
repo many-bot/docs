@@ -1,3 +1,12 @@
+---
+title: ctx.send & ctx.msg
+description: Envio de mensagens e contexto da mensagem que disparou o handler — todos os métodos, opções, ações encadeáveis e formatos de ID.
+sidebar:
+  order: 3
+---
+
+import CtxMethod from '../../../../components/CtxMethod.astro';
+
 # ctx.send
 
 API de envio. Todo método retorna um `MessageHandle` (thenable) com ações encadeáveis.
@@ -22,6 +31,11 @@ await ctx.send.poll("Qual sabor?", ["Morango", "Chocolate"], { allowMultipleAnsw
 // qualquer chat, por ID (setup + runtime)
 await ctx.send.to(chatId).text("notificação");
 ```
+
+<CtxMethod id="send.text" />
+<CtxMethod id="msg.reply.text" />
+
+<CtxMethod id="send.to" />
 
 ### Opções por método
 
@@ -159,16 +173,16 @@ if (ctx.msg.hasReply) {
 > `quoted.senderName` **sempre** cai pro número de telefone — o protocolo de citação do WhatsApp
 > (`contextInfo`) não carrega o `pushName` de quem mandou a mensagem original, só o JID. Isso é
 > diferente do `ctx.contacts.get()`/`ctx.msg.getContact()`, que de fato aprende e guarda o nome
-> real ao vivo (veja a nota em [ctx.contacts](/docs/05-ctx-contacts/)) — mas `getReply()` não
+> real ao vivo (veja a nota em [ctx.contacts](/docs/api/ctx-contacts/)) — mas `getReply()` não
 > passa por esse caminho, então não se beneficia disso.
 
 ### Contato do remetente
 
 `ctx.msg.getContact()` resolve `@lid` automaticamente — prefira isso a
 `ctx.contacts.get(ctx.msg.sender)` dentro de um handler. Mesma shape de
-[objeto de contato](/docs/05-ctx-contacts/#objeto-de-contato-normalizado), incluindo o mesmo
+[objeto de contato](/docs/api/ctx-contacts/#objeto-de-contato-normalizado), incluindo o mesmo
 comportamento de devolver `null` pra alguém que o bot ainda não "viu" mandar mensagem (veja a
-nota em [ctx.contacts](/docs/05-ctx-contacts/)) — trate esse caso antes de usar `contact.mention`
+nota em [ctx.contacts](/docs/api/ctx-contacts/)) — trate esse caso antes de usar `contact.mention`
 ou qualquer outro campo:
 
 ```js

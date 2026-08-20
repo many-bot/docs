@@ -1,3 +1,10 @@
+---
+title: utilidades
+description: ctx.config, ctx.i18n, ctx.utils, ctx.download, ctx.scheduler, ctx.storage, ctx.settings, ctx.plugins, ctx.log, ctx.botId, ctx.wa — todas as APIs utilitárias do ctx.
+sidebar:
+  order: 8
+---
+
 # ctx.config
 
 ```js

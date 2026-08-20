@@ -1,4 +1,9 @@
-# Como fazer um plugin
+---
+title: Como fazer um plugin
+description: Como criar um plugin pro ManyBot do zero — index.js, manyplug.json, package.json, locale, TypeScript, e como publicar no registry oficial.
+sidebar:
+  order: 6
+---
 
 Aqui você vai aprender tudo que precisa para começar a desenvolver plugins para o ManyBot.
 
@@ -41,7 +46,7 @@ export default async function (ctx) {
 
 É só isso. Um arquivo exportando uma função `default` que recebe `ctx` — o objeto com toda a
 API do bot. Para entender o que mais está disponível no `ctx`, veja a
-[Referência da API](/docs/00-index).
+[Referência da API](/docs/api/).
 
 ---
 
@@ -271,7 +276,7 @@ Nome do arquivo de entrada. Normalmente `"index.js"`. Se omitido, o ManyBot proc
 
 #### `dependencies`
 **Não é para pacotes npm** — isso é o `package.json` (próxima seção). Esse campo lista **outros
-plugins do ManyBot** que o seu usa via [`ctx.plugins.require()`](/docs/08-ctx-utilities/#ctxplugins):
+plugins do ManyBot** que o seu usa via [`ctx.plugins.require()`](/docs/api/ctx-utilities/#ctxplugins):
 
 ```json
 {
@@ -451,7 +456,7 @@ export default async function (ctx) {
 
 > Locales não são obrigatórios, mas são incentivados. Sem locale, o plugin simplesmente não oferece suporte a múltiplos idiomas.
 
-Para mais detalhes sobre a API de i18n, veja [ctx.i18n](/docs/08-ctx-utilities/#ctxi18n).
+Para mais detalhes sobre a API de i18n, veja [ctx.i18n](/docs/api/ctx-utilities/#ctxi18n).
 
 ---
 

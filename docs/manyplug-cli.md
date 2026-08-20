@@ -1,4 +1,9 @@
-# ManyPlug CLI
+---
+title: ManyPlug CLI
+description: Referência do gerenciador de plugins do ManyBot — init, install, link, search, validate, update, list, enable/disable, remove, info, version.
+sidebar:
+  order: 5
+---
 
 O gerenciador de plugins oficial do ManyBot.
 
@@ -80,7 +85,7 @@ sempre que editar `src/index.ts`.
 Em ambos os casos (JS ou TS), o pacote `@manybot/types` (adicionado como `devDependency` pelo
 `init`) descreve o formato do `ctx` — importe dele (`import('@manybot/types').PluginContext` via
 JSDoc, ou `import type { PluginContext } from "@manybot/types"` em TS) pra ter autocomplete no
-seu editor. Veja a [Referência da API](/docs/00-index) pra saber o que cada parte de `ctx` faz.
+seu editor. Veja a [Referência da API](/docs/api/) pra saber o que cada parte de `ctx` faz.
 
 ### `--type pluginpack` / `--type profile`
 

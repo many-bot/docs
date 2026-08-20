@@ -1,4 +1,9 @@
-# ctx.contacts
+---
+title: ctx.contacts
+description: Informações de contatos — get, getPfpUrl, getPfpPath, getAbout, block/unblock, e o shape normalizado do contato.
+sidebar:
+  order: 5
+---
 
 Informações de contatos (setup + runtime).
 

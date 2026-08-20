@@ -1,4 +1,9 @@
-# Primeiros passos
+---
+title: Primeiros passos
+description: Do zero a um ManyBot respondendo mensagens em poucos minutos — instalação, conexão e primeiros testes.
+sidebar:
+  order: 1
+---
 
 Caso você só queira um bot simples pra tarefas básicas (como baixar vídeos/áudios,
 fazer figurinhas, etc), recomendamos usar a instância oficial, adicionando o número:

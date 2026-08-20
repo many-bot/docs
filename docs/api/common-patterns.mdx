@@ -1,4 +1,11 @@
-# Padrões comuns
+---
+title: Padrões comuns
+description: Receitas prontas pros cenários mais comuns em plugins — comando simples, sessão por chat, setup com notificação, dados persistentes, i18n, comandos admin, lembrete agendado.
+sidebar:
+  order: 9
+---
+
+import CtxMethod from '../../../../components/CtxMethod.astro';
 
 ### Comando simples
 
@@ -60,6 +67,8 @@ export default async function (ctx) {
 }
 ```
 
+<CtxMethod id="send.to" />
+
 ### Dados persistentes
 
 ```js
@@ -76,6 +85,8 @@ export default async function (ctx) {
   await ctx.msg.reply.text(`Você tem ${db[ctx.msg.sender]} ponto(s)!`);
 }
 ```
+
+<CtxMethod id="storage.resolve" />
 
 ### i18n própria
 
