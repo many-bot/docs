@@ -32,27 +32,30 @@ export default async function (ctx) {
 
 | API | setup | runtime |
 |---|---|---|
-| [`ctx.config`](/docs/api/ctx-utilities/#ctxconfig) | ✅ | ✅ |
-| [`ctx.i18n`](/docs/api/ctx-utilities/#ctxi18n) (e o atalho `ctx.t`) | ✅ | ✅ |
-| [`ctx.utils`](/docs/api/ctx-utilities/#ctxutils) | ✅ | ✅ |
-| [`ctx.download`](/docs/api/ctx-utilities/#ctxdownload) | ✅ | ✅ |
-| [`ctx.scheduler`](/docs/api/ctx-utilities/#ctxscheduler) | ✅ | ✅ |
-| [`ctx.storage`](/docs/api/ctx-utilities/#ctxstorage) | ✅ | ✅ |
-| [`ctx.plugins`](/docs/api/ctx-utilities/#ctxplugins) | ✅ | ✅ |
-| [`ctx.log`](/docs/api/ctx-utilities/#ctxlog) | ✅ | ✅ |
-| [`ctx.botId`](/docs/api/ctx-utilities/#ctxbotid) | ✅ | ✅ |
+| [`ctx.config`](/docs/api/ctx-config/) | ✅ | ✅ |
+| [`ctx.i18n`](/docs/api/ctx-i18n/) (e o atalho `ctx.t`) | ✅ | ✅ |
+| [`ctx.utils`](/docs/api/ctx-utils/) | ✅ | ✅ |
+| [`ctx.download`](/docs/api/ctx-download/) | ✅ | ✅ |
+| [`ctx.scheduler`](/docs/api/ctx-scheduler/) | ✅ | ✅ |
+| [`ctx.storage`](/docs/api/ctx-storage/) | ✅ | ✅ |
+| [`ctx.plugins`](/docs/api/ctx-plugins/) | ✅ | ✅ |
+| [`ctx.log`](/docs/api/ctx-log/) | ✅ | ✅ |
+| [`ctx.botId`](/docs/api/ctx-botid/) | ✅ | ✅ |
 | [`ctx.contacts`](/docs/api/ctx-contacts/) | ✅ | ✅ |
-| [`ctx.me`](/docs/api/ctx-chat-admin-me/#ctxme) | ✅ | ✅ |
-| [`ctx.settings`](/docs/api/ctx-utilities/#ctxsettings) | ⚠️ reduzido (só `.global`) | ✅ completo |
-| [`ctx.admin.add()`](/docs/api/ctx-chat-admin-me/#ctxadmin) | ⚠️ só com `.to(chatId)` | ✅ |
-| [`ctx.send.to()`](/docs/api/ctx-messaging/#ctxsend) | ✅ | ✅ |
+| [`ctx.me`](/docs/api/ctx-me/) | ✅ | ✅ |
+| 🧪 [`ctx.commands`](/docs/api/ctx-commands/) (experimental) | ✅ | ✅ |
+| [`ctx.settings`](/docs/api/ctx-settings/) | ⚠️ reduzido (só `.global`) | ✅ completo |
+| [`ctx.admin.add()`](/docs/api/ctx-admin/) | ⚠️ só com `.to(chatId)` | ✅ |
+| [`ctx.send.to()`](/docs/api/ctx-send/) | ✅ | ✅ |
 | [`ctx.events`](/docs/api/ctx-events/) | ✅ | ❌ |
-| [`ctx.send.text/image/...`](/docs/api/ctx-messaging/#ctxsend) (chat atual) | ❌ | ✅ |
-| [`ctx.msg`](/docs/api/ctx-messaging/#ctxmsg) | ❌ | ✅ |
-| [`ctx.chat`](/docs/api/ctx-chat-admin-me/#ctxchat) | ❌ | ✅ |
-| [`ctx.admin`](/docs/api/ctx-chat-admin-me/#ctxadmin) (demais métodos) | ❌ | ✅ |
+| [`ctx.send.text/image/...`](/docs/api/ctx-send/) (chat atual) | ❌ | ✅ |
+| [`ctx.msg`](/docs/api/ctx-msg/) | ❌ | ✅ |
+| [`ctx.chat`](/docs/api/ctx-chat/) | ❌ | ✅ |
+| [`ctx.admin`](/docs/api/ctx-admin/) (demais métodos) | ❌ | ✅ |
 | [`ctx.poll`](/docs/api/ctx-polls/) | ❌ | ✅ |
-| [`ctx.wa`](/docs/api/ctx-utilities/#ctxwa) (escape hatch, socket/store/msg crus) | ❌ | ✅ |
+| [`ctx.wa`](/docs/api/ctx-wa/) (escape hatch, socket/store/msg crus) | ❌ | ✅ |
+| 🧪 [`ctx.session`](/docs/api/ctx-session/) (experimental) | ❌ | ✅ |
+| 🧪 [`ctx.runCommand`](/docs/api/ctx-runcommand/) (experimental) | ❌ | ✅ |
 
 > `ctx.events` só existe no setup — registrar listener dentro do handler de mensagem criaria um
 > listener novo a cada mensagem.
@@ -63,3 +66,6 @@ export default async function (ctx) {
 >
 > `ctx.settings` existe em ambos, mas no setup só expõe `.global` (configurações do bot inteiro,
 > sem chat associado) — o restante (`.forChat()`, `.link()`, etc.) só faz sentido em runtime.
+>
+> 🧪 `ctx.commands`, `ctx.session` e `ctx.runCommand` fazem parte da nova arquitetura
+> [`commands.yaml`](/docs/commands-yaml/), ainda **experimental** e em testes.

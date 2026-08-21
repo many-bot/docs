@@ -1,46 +1,12 @@
 ---
-title: ctx.chat, ctx.admin & ctx.me
-description: Informações do chat atual, ações de administração de grupo e perfil do próprio bot.
+title: ctx.admin
+description: Ações de administração de grupo — kick, add, promote, demote, subject, descrição, foto e convite.
 sidebar:
-  order: 4
+  order: 6
 ---
-
-# ctx.chat
-
-Informações do chat atual (runtime only, já filtrado pela lista de permitidos do `manybot.toml`).
-
-```js
-ctx.chat.id;                          // string
-ctx.chat.name;                        // string
-ctx.chat.isGroup;                     // boolean
-await ctx.chat.getParticipants();     // [] em privado — [{ id, isAdmin, isSuperAdmin }] em grupo
-await ctx.chat.isAdmin(contactId);    // false em privado
-await ctx.chat.isSenderAdmin();       // atalho pra isAdmin(ctx.msg.sender)
-await ctx.chat.isBotAdmin();          // cheque antes de usar ctx.admin.*
-```
-
-```js
-if (ctx.chat.isGroup) {
-  await ctx.send.text(`Olá, grupo *${ctx.chat.name}*!`);
-} else {
-  await ctx.send.text(`Olá, ${ctx.msg.senderName}!`);
-}
-
-if (ctx.msg.is("banir")) {
-  if (!await ctx.chat.isSenderAdmin()) return void await ctx.msg.reply.text("Só admins.");
-  // ...
-}
-```
-
-> `ctx.chat.clearMessages()` existe na interface, mas atualmente **não tem efeito** — só registra
-> um aviso no log. O Baileys ainda não expõe essa funcionalidade.
-
----
-
-# ctx.admin
 
 Ações de administração de grupo (runtime only). Cheque `ctx.chat.isGroup` e
-`ctx.chat.isBotAdmin()` antes de chamar.
+`ctx.chat.isBotAdmin()` antes de chamar — veja [ctx.chat](/docs/api/ctx-chat/).
 
 ```js
 await ctx.admin.kick(memberIds);              // string | string[]
@@ -82,18 +48,3 @@ export default async function (ctx) {
 
 > **kick ≠ ban:** WhatsApp não tem ban nativo. Combine `kick` com `ctx.contacts.block` pra
 > impedir re-entrada.
-
----
-
-# ctx.me
-
-Perfil do próprio bot (setup + runtime).
-
-```js
-await ctx.me.setName("ManyBot 🟢");
-await ctx.me.setAbout("Online — digite !ajuda para começar.");
-await ctx.me.setProfilePic("/tmp/avatar.jpg"); // ou Buffer
-
-// atualizar em runtime conforme estado
-if (filaCheia) await ctx.me.setAbout("Ocupado — processando downloads...");
-```

@@ -1,0 +1,75 @@
+---
+title: ctx.send
+description: API de envio de mensagens do ManyBot — texto, mídia, figurinha, enquete, ações encadeáveis (react/delete/edit) e o roteamento .to(chatId).
+sidebar:
+  order: 3
+---
+
+import CtxMethod from '../../../../components/CtxMethod.astro';
+
+API de envio. Todo método retorna um `MessageHandle` (thenable) com ações encadeáveis.
+
+```js
+// chat atual (runtime only)
+await ctx.send.text("Olá!");
+await ctx.send.text("https://exemplo.com", { linkPreview: false });
+await ctx.send.text("Olá @user", { mentions: ["5511999999999@c.us"] });
+
+await ctx.send.image("/tmp/foto.jpg", "legenda");
+await ctx.send.image("/tmp/foto.jpg", "secreta", { viewOnce: true });
+
+await ctx.send.video("/tmp/video.mp4", "legenda");
+await ctx.send.audio("/tmp/audio.ogg");                      // como voz (padrão)
+await ctx.send.audio("/tmp/audio.ogg", { asVoice: false });   // como áudio normal
+await ctx.send.sticker("/tmp/sticker.webp");
+await ctx.send.sticker(bufferGeradoEmMemoria);
+await ctx.send.file("/tmp/relatorio.pdf", "relatorio-2025.pdf");
+await ctx.send.poll("Qual sabor?", ["Morango", "Chocolate"], { allowMultipleAnswers: true });
+
+// qualquer chat, por ID (setup + runtime)
+await ctx.send.to(chatId).text("notificação");
+```
+
+<CtxMethod id="send.text" />
+<CtxMethod id="msg.reply.text" />
+
+<CtxMethod id="send.to" />
+
+As opções aceitas por cada método (`text`, `image`/`video`, `audio`, `poll`, `sticker`/`file`)
+estão reunidas em [ctx — opções e assinaturas](/docs/api/ctx-options/#ctxsend).
+
+### Ações pós-envio (chaining)
+
+```js
+await ctx.send.text("Pronto!").react("✅");
+
+const handle = await ctx.send.image("/tmp/x.jpg"); // handle = Message enviada
+await handle.delete();
+```
+
+`delete(forEveryone? = true)` e `react(emoji)` retornam `Promise`. Hoje, `delete(false)`
+("apagar só pra mim") **não faz nada** — só `delete()`/`delete(true)` (apagar pra todos)
+realmente tem efeito.
+
+```js
+const handle = await ctx.send.text("Processando...");
+await handle.edit("Pronto! ✅");
+```
+
+`edit(text)` só funciona em mensagens do **próprio bot** — chamar em uma mensagem que não é
+`fromMe` lança erro. Com `SECURITY_LEVEL = "high"` (`manybot.toml`), edições passam por um
+throttle (a exemplo do resto dos envios); nos demais níveis (`low`/`medium`) não há throttle
+nenhum aplicado a `edit()`.
+
+> `pin(duration?)` também existe na interface, mas atualmente **não tem efeito** — o Baileys (a
+> biblioteca por trás da conexão com o WhatsApp) ainda não suporta fixar mensagens, então chamar
+> `.pin()` só registra um aviso no log e não faz nada. Deixamos o método aí pra quando isso mudar.
+
+> **send vs reply:** `ctx.send.*` manda sem citar nada. `ctx.msg.reply.*` cita a mensagem que
+> disparou o handler — prefira `reply` em grupos. Veja [ctx.msg](/docs/api/ctx-msg/).
+
+> **`ctx.send.to()` dentro de um handler** não aplica `cooldown`/`jitter` do `guardOptions` do
+> seu plugin (só o limite global de envios continua valendo) — é assim porque `.to()` normalmente
+> serve pra notificar outro chat, não o atual. Já em `setup()`, `ctx.send.to()` aplica
+> `cooldown`/`jitter` normalmente (os padrões, `true`/`true`, já que não há `guardOptions` de
+> chat nenhum nesse ponto).

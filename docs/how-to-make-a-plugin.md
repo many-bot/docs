@@ -12,6 +12,10 @@ Caso ainda não leu [sobre os plugins](/docs/about-plugins), é recomendado ler 
 > Depois de passar por essa página, vale a pena ler também
 > [boas práticas em plugins](/docs/best-practices) — principalmente a parte sobre dependências
 > nativas, que trava a instalação em bastante gente no Android/Termux se não for evitada.
+>
+> 🧪 Existe também uma nova forma **experimental** (ainda em testes) de declarar a identidade,
+> permissões e argumentos de um comando fora do código do plugin: veja
+> [`commands.yaml`](/docs/commands-yaml/).
 
 ## Índice
 
@@ -276,7 +280,7 @@ Nome do arquivo de entrada. Normalmente `"index.js"`. Se omitido, o ManyBot proc
 
 #### `dependencies`
 **Não é para pacotes npm** — isso é o `package.json` (próxima seção). Esse campo lista **outros
-plugins do ManyBot** que o seu usa via [`ctx.plugins.require()`](/docs/api/ctx-utilities/#ctxplugins):
+plugins do ManyBot** que o seu usa via [`ctx.plugins.require()`](/docs/api/ctx-plugins/):
 
 ```json
 {
@@ -456,7 +460,7 @@ export default async function (ctx) {
 
 > Locales não são obrigatórios, mas são incentivados. Sem locale, o plugin simplesmente não oferece suporte a múltiplos idiomas.
 
-Para mais detalhes sobre a API de i18n, veja [ctx.i18n](/docs/api/ctx-utilities/#ctxi18n).
+Para mais detalhes sobre a API de i18n, veja [ctx.i18n](/docs/api/ctx-i18n/).
 
 ---
 

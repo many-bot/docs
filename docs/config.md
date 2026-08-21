@@ -10,6 +10,10 @@ Na primeira execução, o ManyBot cria `~/.manybot/manybot.toml` (no Windows,
 Edite esse arquivo para configurar o bot — não existe comando `manybot config`,
 é só um arquivo de texto.
 
+> 🧪 Comandos têm seu próprio arquivo, `~/.manybot/commands.yaml` — separado deste e em YAML,
+> não TOML. É a nova arquitetura de comandos, ainda **experimental**: veja
+> [`commands.yaml`](/docs/commands-yaml/).
+
 ## Chaves disponíveis
 
 | Chave          | Padrão      | Descrição                                                                 |
@@ -23,7 +27,7 @@ Edite esse arquivo para configurar o bot — não existe comando `manybot config
 
 > Essas são as chaves que o próprio ManyBot lê. Plugins podem definir e ler
 > chaves adicionais no mesmo arquivo via `ctx.config.get("MINHA_CHAVE")` — veja
-> [ctx.config](/docs/api/ctx-utilities/#ctxconfig).
+> [ctx.config](/docs/api/ctx-config/).
 
 ## O que recarrega sozinho
 
@@ -34,7 +38,7 @@ mensagem.
 `LANGUAGE` é a exceção: o sistema de traduções carrega o idioma uma única vez
 e não escuta esse arquivo. Mudar `LANGUAGE` em runtime não troca o idioma dos
 textos já carregados — é preciso reiniciar o bot, ou um plugin chamar
-`ctx.i18n.reload()` manualmente (veja [ctx.i18n](/docs/api/ctx-utilities/#ctxi18n)).
+`ctx.i18n.reload()` manualmente (veja [ctx.i18n](/docs/api/ctx-i18n/)).
 
 ## CHATS — restringindo onde o bot responde
 
@@ -62,7 +66,7 @@ para colar em `CHATS`.
 
 > Grupos usam o sufixo `@g.us`; conversas privadas usam `@c.us` (esse é o
 > formato que o ManyBot expõe em `ctx.chat.id`, `ctx.msg.sender` e nos objetos
-> de contato — veja a nota sobre isso em [ctx.msg](/docs/api/ctx-messaging/)).
+> de contato — veja a nota sobre isso em [ctx.msg](/docs/api/ctx-msg/)).
 
 ## Arquivos legados
 
