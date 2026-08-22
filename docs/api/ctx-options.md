@@ -17,7 +17,7 @@ Opções por método — veja [ctx.send](/docs/api/ctx-send/) para exemplos.
 | Método | Opções |
 |---|---|
 | `text` | `{ linkPreview?, mentions?: string[] }` |
-| `image` / `video` | `{ viewOnce? }` |
+| `image` / `video` / `gif` | `{ viewOnce?, mentions?: string[] }` |
 | `audio` | `{ asVoice? (padrão true), viewOnce? }` |
 | `poll` | `{ allowMultipleAnswers? }` |
 | `sticker` / `file` | sem opções extra |

@@ -15,7 +15,20 @@ await ctx.chat.getParticipants();     // [] em privado — [{ id, isAdmin, isSup
 await ctx.chat.isAdmin(contactId);    // false em privado
 await ctx.chat.isSenderAdmin();       // atalho pra isAdmin(ctx.msg.sender)
 await ctx.chat.isBotAdmin();          // cheque antes de usar ctx.admin.*
+ctx.chat.history;                     // WAHistoryArray — mensagens do chat, mais antigas primeiro
 ```
+
+`ctx.chat.history` se comporta como um array normal (`history[10]`, `.length`, `.map()`, ...) e
+tem dois filtros encadeáveis, ambos retornando outro `WAHistoryArray`:
+
+```js
+ctx.chat.history.last(5);           // últimas 5 mensagens
+ctx.chat.history.from(contactId);   // só mensagens desse remetente
+ctx.chat.history.last(20).from(contactId); // combinando os dois
+```
+
+> O histórico é mantido em memória, com um teto de **200 mensagens por chat** — mensagens mais
+> antigas que isso não ficam disponíveis.
 
 ```js
 if (ctx.chat.isGroup) {

@@ -24,6 +24,21 @@ Edite esse arquivo para configurar o bot — não existe comando `manybot config
 | `LANGUAGE`     | `"en"`      | Idioma da interface e das traduções (`t()`, `ctx.i18n`, `ctx.t`). Atualmente `en`, `es` e `pt`. |
 | `PHONE_NUMBER` | `""`        | Número (com DDI) usado para conectar via código de pareamento. Só é lido se `LOGIN_METHOD = "phone"`. |
 | `LOGIN_METHOD` | `""`        | `"qr"` ou `"phone"`. Vazio = pergunta interativamente na primeira conexão e salva a escolha aqui automaticamente. |
+| `EXCLUDE_CHATS` | `[]`       | Lista de JIDs a **ignorar**, mesmo que passem pelo filtro de `CHATS`. Útil pra excluir um chat específico sem restringir todo o resto. |
+| `SECURITY_LEVEL` | `"medium"` | `"low"` / `"medium"` / `"high"` — quão cauteloso o bot é pra não parecer automatizado. Níveis mais altos deixam o bot mais lento (menos chats simultâneos, atrasos maiores), mas reduzem o risco do WhatsApp sinalizar a conta. Valor inválido cai pro padrão. |
+| `LOG_LEVEL` | `"normal"` | `"normal"` (tudo) / `"clean"` (esconde ruído de rotina, mantém sucesso/avisos/erros) / `"minimal"` (só avisos e erros). Valor inválido cai pro padrão. |
+| `OWNER_NUMBER` | `""`     | Número (ou JID) tratado como dono do bot — é contra esse valor que a permissão `owner: true` do [`commands.yaml`](/docs/commands-yaml/) checa. String vazia é tratada como "não configurado". |
+| `ADMIN_JID` | `""`        | Número/JID que recebe alertas via WhatsApp quando o bot sobe (alertas críticos, aviso de update). Vazio desliga esse canal — o log e a notificação do SO continuam funcionando mesmo assim. |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_SEC` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` / `SMTP_TO` | `""` / `587` / `"starttls"` / `""` / `""` / `""` / `""` | Canal de alerta por e-mail, opcional — deixe `SMTP_HOST` em branco pra desligar. `SMTP_SEC`: `"starttls"` (porta 587, upgrade após conectar), `"ssl"` (porta 465, criptografado desde o início) ou `"none"`. |
+| `SMTP_INSECURE` | `false`  | Pula validação do certificado TLS — necessário pra proxies SMTP locais com certificado autoassinado (ex: Proton Mail Bridge, Mailhog, Mailpit). Deixe `false` pra um provedor remoto real. |
+| `UPDATE_CHECK_ENABLED` | `true` | Checa no npm se existe uma versão nova do ManyBot: ao iniciar, e depois a cada `UPDATE_CHECK_INTERVAL_HOURS`. |
+| `UPDATE_CHECK_INTERVAL_HOURS` | `24` | Intervalo (em horas) entre checagens de atualização, quando `UPDATE_CHECK_ENABLED = true`. |
+| `STATUS_ENABLED` | `true`  | Liga uma página HTTP local mostrando se o bot está online ou offline. |
+| `STATUS_PORT` | `8080`     | Porta da página de status, quando `STATUS_ENABLED = true`. |
+
+> As chaves de driver (`driver_primary`, `driver_baileys_enabled`, `driver_fallback_cooldown_ms`,
+> `driver_verify_window_ms`) controlam a seleção/fallback de driver de conexão. Hoje só o driver
+> Baileys existe, então na prática só valem os padrões — não há necessidade de mexer nelas.
 
 > Essas são as chaves que o próprio ManyBot lê. Plugins podem definir e ler
 > chaves adicionais no mesmo arquivo via `ctx.config.get("MINHA_CHAVE")` — veja

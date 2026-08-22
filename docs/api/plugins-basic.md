@@ -53,10 +53,11 @@ export const guardOptions = {
 > **3 falhas seguidas** o plugin é desativado de verdade. Ou seja, um erro isolado não tira seu
 > plugin do ar; falhar toda vez, sim.
 
-> `typing: false` só desliga o indicador contínuo acima — um "digitando…" breve e proporcional
-> ao tamanho da mensagem ainda aparece em cada envio (`ctx.send`/`ctx.msg.reply`), independente
-> dessa opção. Hoje esse indicador é sempre "digitando…", mesmo enviando áudio — não existe um
-> indicador distinto de "gravando áudio…" implementado ainda.
+> `typing: false` só desliga o indicador contínuo acima — um indicador breve e proporcional ao
+> tamanho do conteúdo ainda aparece em cada envio (`ctx.send`/`ctx.msg.reply`), independente
+> dessa opção. Pra `ctx.send.audio()`/`ctx.msg.reply.audio()` esse indicador é "gravando
+> áudio…" (`recording`), diferente do "digitando…" (`typing`) usado por texto e demais mídias.
 
 > Isso **não** impede banimento do WhatsApp — só mitiga alguns efeitos de detecção. Veja os
 > [Termos de Uso](/docs/terms-and-privacy/).
+

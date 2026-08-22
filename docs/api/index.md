@@ -25,7 +25,7 @@ precisar de algo que a API não cobre, existe um escape hatch (`ctx.wa`) com ace
 7. [ctx.me](/docs/api/ctx-me/)
 8. [ctx.contacts](/docs/api/ctx-contacts/)
 9. [ctx.events](/docs/api/ctx-events/)
-10. [ctx.poll](/docs/api/ctx-polls/)
+10. [ctx.poll](/docs/api/ctx-poll/)
 11. [ctx.config](/docs/api/ctx-config/)
 12. [ctx.i18n](/docs/api/ctx-i18n/)
 13. [ctx.utils](/docs/api/ctx-utils/)
@@ -42,3 +42,6 @@ precisar de algo que a API não cobre, existe um escape hatch (`ctx.wa`) com ace
 24. 🧪 [ctx.session](/docs/api/ctx-session/) — idem
 25. 🧪 [ctx.runCommand](/docs/api/ctx-runcommand/) — idem
 26. [Padrões comuns](/docs/api/common-patterns/)
+
+*(A numeração acima segue a ordem de leitura sugerida da lista, não necessariamente a ordem exibida na barra lateral.)*
+

@@ -52,7 +52,7 @@ export default async function (ctx) {
 | [`ctx.msg`](/docs/api/ctx-msg/) | ❌ | ✅ |
 | [`ctx.chat`](/docs/api/ctx-chat/) | ❌ | ✅ |
 | [`ctx.admin`](/docs/api/ctx-admin/) (demais métodos) | ❌ | ✅ |
-| [`ctx.poll`](/docs/api/ctx-polls/) | ❌ | ✅ |
+| [`ctx.poll`](/docs/api/ctx-poll/) | ❌ | ✅ |
 | [`ctx.wa`](/docs/api/ctx-wa/) (escape hatch, socket/store/msg crus) | ❌ | ✅ |
 | 🧪 [`ctx.session`](/docs/api/ctx-session/) (experimental) | ❌ | ✅ |
 | 🧪 [`ctx.runCommand`](/docs/api/ctx-runcommand/) (experimental) | ❌ | ✅ |
@@ -69,3 +69,4 @@ export default async function (ctx) {
 >
 > 🧪 `ctx.commands`, `ctx.session` e `ctx.runCommand` fazem parte da nova arquitetura
 > [`commands.yaml`](/docs/commands-yaml/), ainda **experimental** e em testes.
+

@@ -12,6 +12,9 @@ fazer figurinhas, etc), recomendamos usar a instância oficial, adicionando o n�
 Se o seu objetivo é hospedar o seu próprio bot personalizado, esta página te leva do
 zero a um bot respondendo mensagens em poucos minutos.
 
+> ⚠️ **Versões 5.6.x e 5.7.x são instáveis** por um erro de gerenciamento de release — use
+> **5.5.4** em vez delas até o próximo lançamento estável.
+
 > Em caso de dúvidas, você pode nos contatar via [manybot@pm.me](mailto:manybot@pm.me)
 > ou nas nossas comunidades do [WhatsApp](https://chat.whatsapp.com/KfOuIwhpQjN8fcZTMHmaGQ) e [Discord](https://discord.gg/gC7aKChXmA).
 
@@ -63,7 +66,7 @@ Instale o Node.js e o NPM de acordo com sua distribuição Linux (pode ser neces
 > Verifique em qual distribuição o seu sistema se baseia —
 > por exemplo, Linux Mint é baseado em Ubuntu, logo o comando de instalação é o mesmo.
 >
-> Se o pacote da sua distro instalar uma versão do Node abaixo da 20, use o
+> Se o pacote da sua distro instalar uma versão do Node abaixo da 24, use o
 > [NodeSource](https://github.com/nodesource/distributions) ou o [nvm](https://github.com/nvm-sh/nvm)
 > pra pegar uma versão mais recente.
 

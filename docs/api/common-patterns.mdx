@@ -52,6 +52,9 @@ export default async function (ctx) {
 }
 ```
 
+> Essa receita usa um `Map()` manual, mas hoje já existe [`ctx.session`](/docs/api/ctx-session/)
+> 🧪 fazendo esse mesmo lock por chat dentro do kernel — vale considerar em vez de reimplementar.
+
 ### Setup com notificação
 
 ```js

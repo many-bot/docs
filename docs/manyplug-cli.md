@@ -1,6 +1,6 @@
 ---
 title: ManyPlug CLI
-description: Referência do gerenciador de plugins do ManyBot — init, install, link, search, validate, update, list, enable/disable, remove, info, version.
+description: Referência do gerenciador de plugins do ManyBot — init, install, link, unlink, search, validate, update, list, enable/disable, remove, info, version.
 sidebar:
   order: 5
 ---
@@ -161,6 +161,22 @@ não são suportados por esse comando — use `install` nesse caso.
 
 ---
 
+## unlink
+
+Desfaz um `link`: remove o plugin da pasta de plugins, mas **não toca** no diretório-fonte
+original. Alias: `unln`.
+
+```bash
+manyplug unlink <plugin> [plugin2...]
+manyplug unln meu-plugin
+```
+
+### Opções
+
+- `-y`, `--yes` — pula confirmação
+
+---
+
 ## search
 
 Busca plugins no registry por nome, key, categoria ou descrição. Alias: `s`.
@@ -181,17 +197,21 @@ pluginpack ou profile aparecem marcadas como `[pluginpack]`/`[profile]`.
 
 ## update
 
-Reinstala todos os plugins não-locais com as versões mais recentes do registry. Alias: `up`.
+Reinstala plugins cuja versão no registry mudou desde a instalada — **não** é um reinstall
+incondicional. Sem argumentos, checa todos os plugins instalados; aceita nomes específicos.
+Alias: `up`.
 
 ```bash
 manyplug update
+manyplug up meu-plugin outro-plugin
 ```
 
 ### Opções
 
 - `-y`, `--yes` — pula confirmação
+- `-f`, `--force` — reinstala mesmo quando a versão local já está atualizada
 
-> Plugins locais (instalados com `--local`) e sem `key` são ignorados.
+> Plugins locais (instalados com `--local`) e sem `key` são ignorados (avisados separadamente).
 
 ---
 
@@ -208,8 +228,10 @@ manyplug ls --all
 
 - `-a`, `--all` — inclui plugins desativados
 
-A listagem mostra nome, versão, categoria e status — que pode ser `enabled`, `disabled` ou
-`incomplete` (o arquivo de entrada declarado em `main` não existe mais no disco).
+A listagem mostra nome, versão, categoria, uma coluna **linked** (`Yes`/`No` — se o plugin foi
+instalado via `link`) e status — que pode ser `enabled`, `disabled` ou `incomplete` (o arquivo de
+entrada declarado em `main` não existe mais no disco). Um `!` antes do nome sinaliza manifesto
+corrompido/ilegível.
 
 ---
 

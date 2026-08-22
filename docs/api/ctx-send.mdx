@@ -19,6 +19,7 @@ await ctx.send.image("/tmp/foto.jpg", "legenda");
 await ctx.send.image("/tmp/foto.jpg", "secreta", { viewOnce: true });
 
 await ctx.send.video("/tmp/video.mp4", "legenda");
+await ctx.send.gif("/tmp/anim.gif", "legenda");               // convertido pra mp4 via ffmpeg
 await ctx.send.audio("/tmp/audio.ogg");                      // como voz (padrão)
 await ctx.send.audio("/tmp/audio.ogg", { asVoice: false });   // como áudio normal
 await ctx.send.sticker("/tmp/sticker.webp");
@@ -35,8 +36,11 @@ await ctx.send.to(chatId).text("notificação");
 
 <CtxMethod id="send.to" />
 
-As opções aceitas por cada método (`text`, `image`/`video`, `audio`, `poll`, `sticker`/`file`)
+As opções aceitas por cada método (`text`, `image`/`video`/`gif`, `audio`, `poll`, `sticker`/`file`)
 estão reunidas em [ctx — opções e assinaturas](/docs/api/ctx-options/#ctxsend).
+
+> `ctx.send.gif()` (e `ctx.msg.reply.gif()`) converte o arquivo automaticamente para `mp4` via
+> `ffmpeg` antes de enviar — o WhatsApp não aceita GIF de verdade como mídia.
 
 ### Ações pós-envio (chaining)
 
