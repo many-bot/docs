@@ -25,9 +25,10 @@ export default async function (ctx) {
 Métodos do handle devolvido por `create()`:
 
 ```js
-poll.results();     // { "🍕 Pizza": 3, "🍔 Hambúrguer": 1 }
-poll.onVote(cb);     // cb(results, raw) chamado a cada mudança de voto
-poll.leadingOptions(); // nome(s) da(s) opção(ões) líder(es); [] se ninguém votou ainda
+poll.results();   // { "🍕 Pizza": 3, "🍔 Hambúrguer": 1 }
+poll.onVote(cb);   // cb(results, raw) chamado a cada mudança de voto
+poll.winner();     // nome(s) da(s) opção(ões) líder(es); [] se ninguém votou ainda
+poll.close();      // para de rastrear essa enquete (remove do registro interno)
 ```
 
 `ctx.poll.get(msgId)` recupera um `PollHandle` já criado (por exemplo, depois de um reload do
@@ -40,4 +41,3 @@ const poll = ctx.poll.get(msgId); // PollHandle | null
 > A decriptação e agregação de votos depende do driver — hoje só o driver Baileys implementa
 > esse suporte. Num driver que não implementa, `ctx.poll.create()` continua enviando a enquete
 > normalmente, mas os votos não são contabilizados (`onVote` nunca dispara).
-

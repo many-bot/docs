@@ -6,8 +6,11 @@ sidebar:
 ---
 
 Cada funcionalidade do ManyBot é um plugin independente. Isso permite que desenvolvedores façam
-suas próprias funcionalidades para bots sem tocar no core do sistema — o ManyBot sozinho não tem
-nenhum comando embutido, tudo o que ele faz vem de plugins instalados e ativos.
+suas próprias funcionalidades para bots sem tocar no core do sistema — na prática, os plugins
+ainda fazem a grande maioria do trabalho. (Existem alguns comandos nativos do kernel, como `ping`,
+`status`, `config` - como parte da nova arquitetura experimental do
+[`commands.yaml`](/docs/commands-yaml/), mas eles não substituem os plugins; servem só de base
+até essa opção amadurecer.)
 
 ## Linguagens suportadas
 

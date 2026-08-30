@@ -11,7 +11,8 @@ Contexto da mensagem que disparou o handler (runtime only).
 ctx.msg.body;         // string — texto completo
 ctx.msg.type;         // "chat" | "image" | "video" | "audio" | ...
 ctx.msg.fromMe;       // true se enviada pelo próprio bot
-ctx.msg.sender;       // ID de quem enviou — ex: "5511999999999@c.us"
+ctx.msg.sender;       // ID LID-canônico de quem enviou (@lid) — string | null
+ctx.msg.senderPn;     // mesmo remetente em formato telefone (@c.us) — string | null
 ctx.msg.senderName;   // nome de exibição
 ctx.msg.command;      // primeira palavra, sem prefixo, minúscula
 ctx.msg.args;         // string[] — palavras após o comando
@@ -19,14 +20,26 @@ ctx.msg.hasMedia;     // boolean
 ctx.msg.isGif;        // boolean
 ctx.msg.hasReply;     // true se é resposta a outra msg
 ctx.msg.hasPrefix;    // true se começa com CMD_PREFIX
+ctx.msg.hasMention;   // true se a mensagem menciona alguém (@)
+ctx.msg.hasBotMention; // true se a mensagem menciona o próprio bot
+ctx.msg.mentionedJid; // string[] — JIDs mencionados, PN já resolvido pra @lid quando conhecido
 ```
 
-> **Formato de ID:** o ManyBot normaliza conversas privadas pro sufixo `@c.us` (o formato que o
-> ManyBot já usava antes de migrar pro Baileys) em tudo que expõe a plugins — `ctx.msg.sender`,
-> `ctx.chat.id`, objetos de contato, `CHATS` no `manybot.toml`, etc. Grupos continuam com `@g.us`
-> normalmente. Use sempre `@c.us` ao montar ou comparar um ID de conversa privada manualmente —
+> **`sender` agora é LID-canônico, não `@c.us`:** desde a migração pro Baileys v7 (LID-aware),
+> `ctx.msg.sender` devolve o JID `@lid` do remetente — `null` quando o ManyBot ainda não aprendeu
+> o LID desse contato (comum no primeiro contato). **Não há mais fallback silencioso pra
+> `@c.us`.** Se seu plugin ainda compara `sender` contra números de telefone (ex: contra `CHATS`
+> no `manybot.toml`, ou config baseada em número), use `ctx.msg.senderPn` — a mesma pessoa, no
+> formato `@c.us`, também `null` quando não disponível. Trate os dois campos como possivelmente
+> `null` antes de comparar.
+>
+> **Formato de ID em outros lugares:** conversas privadas (`ctx.chat.id`, `CHATS` no
+> `manybot.toml`) continuam normalizadas pro sufixo `@c.us`, e grupos continuam com `@g.us` — essa
+> parte não mudou. A mudança pra LID é específica de identidade de **pessoa** (`ctx.msg.sender`,
+> `id` no [objeto de contato](/docs/api/ctx-contacts/#objeto-de-contato-normalizado)), não de
+> **conversa**. Use sempre `@c.us` ao montar ou comparar um ID de conversa privada manualmente —
 > um valor com `@s.whatsapp.net` (o formato nativo do Baileys) não vai bater numa comparação
-> `===` com `ctx.msg.sender`.
+> `===` com `ctx.chat.id`.
 
 ### Detectando comandos
 
@@ -119,6 +132,20 @@ if (!contact) return; // ainda não temos dados desse contato
 await ctx.msg.reply.text(`oi ${contact.mention.text}`, contact.mention);
 ```
 
+### Detectando menções
+
+```js
+if (ctx.msg.hasBotMention) {
+  await ctx.msg.reply.text("Me chamou?");
+}
+
+if (ctx.msg.hasMention) {
+  for (const jid of ctx.msg.mentionedJid) {
+    ctx.log.info(`Mencionado: ${jid}`); // já em @lid quando resolvido
+  }
+}
+```
+
 ### Evitando loops
 
 O bot recebe as próprias mensagens também:
@@ -129,3 +156,4 @@ export default async function (ctx) {
   // ...
 }
 ```
+

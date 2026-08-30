@@ -79,9 +79,10 @@ marcar um ou mais chats, Enter para confirmar. Os JIDs selecionados são
 copiados para a área de transferência (e também impressos no terminal), prontos
 para colar em `CHATS`.
 
-> Grupos usam o sufixo `@g.us`; conversas privadas usam `@c.us` (esse é o
-> formato que o ManyBot expõe em `ctx.chat.id`, `ctx.msg.sender` e nos objetos
-> de contato — veja a nota sobre isso em [ctx.msg](/docs/api/ctx-msg/)).
+> Grupos usam o sufixo `@g.us`; conversas privadas usam `@c.us` — esse é o formato de **conversa**
+> que o ManyBot expõe em `ctx.chat.id` e no `CHATS` deste arquivo. Identidade de **pessoa**
+> (`ctx.msg.sender`, `id` nos objetos de contato) é diferente: usa `@lid`, não `@c.us` — veja a
+> nota completa em [ctx.msg](/docs/api/ctx-msg/).
 
 ## Arquivos legados
 

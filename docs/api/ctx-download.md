@@ -29,4 +29,6 @@ export default async function (ctx) {
 }
 ```
 
-Só um job roda por vez. `errorFn` (segundo argumento) não é opcional — sempre passe os dois.
+Só um job roda por vez. `errorFn` (segundo argumento) é opcional — se omitido, o erro ainda é
+logado via `logger.warn` (não é engolido silenciosamente), mas o recomendado é sempre passar os
+dois pra dar feedback ao usuário.

@@ -12,8 +12,8 @@ fazer figurinhas, etc), recomendamos usar a instância oficial, adicionando o n�
 Se o seu objetivo é hospedar o seu próprio bot personalizado, esta página te leva do
 zero a um bot respondendo mensagens em poucos minutos.
 
-> ⚠️ **Versões 5.6.x e 5.7.x são instáveis** por um erro de gerenciamento de release — use
-> **5.5.4** em vez delas até o próximo lançamento estável.
+> ⚠️ Use a versão **5.9.0** ou mais recente — versões anteriores (5.6.x–5.8.x) tiveram problemas
+> de gerenciamento de release.
 
 > Em caso de dúvidas, você pode nos contatar via [manybot@pm.me](mailto:manybot@pm.me)
 > ou nas nossas comunidades do [WhatsApp](https://chat.whatsapp.com/KfOuIwhpQjN8fcZTMHmaGQ) e [Discord](https://discord.gg/gC7aKChXmA).

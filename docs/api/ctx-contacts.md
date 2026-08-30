@@ -20,7 +20,7 @@ await ctx.contacts.unblock(id);
 const contact = await ctx.contacts.get("5511999999999@c.us");
 if (contact) ctx.log.info(`Pushname: ${contact.pushname}`);
 
-const destPath = ctx.storage.resolve(`pfp_${contact.number}.jpg`);
+const destPath = ctx.storage.resolve(`pfp_${contact.numberRaw ?? contact.id}.jpg`);
 const saved = await ctx.contacts.getPfpPath(contact.id, destPath);
 if (saved) await ctx.send.image(saved, "Foto de perfil.");
 ```
@@ -50,8 +50,12 @@ Mesma shape em `ctx.contacts.get()` e `ctx.msg.getContact()`:
 
 ```ts
 {
-  id: string;             // "5511999999999@c.us"
-  number: string;          // "5511999999999"
+  id: string | null;              // JID @lid canônico, ou "5511...@g.us" pra grupo; null se LID desconhecido
+  number: string | null;          // E.164, ex: "+5511999999999"
+  numberRaw: string | null;       // só dígitos, sem "+"
+  numberPretty: string | null;    // formatado, ex: "+55 11 99999 9999"
+  country: string | null;         // ISO 3166-1 alpha-2, ex: "BR"
+  countryCallingCode: string | null; // código do país, ex: "55"
   pushname: string | null;
   name: string | null;     // salvo na sua agenda
   shortName: null;
@@ -66,6 +70,14 @@ Mesma shape em `ctx.contacts.get()` e `ctx.msg.getContact()`:
 }
 ```
 
+> **`id`/`number` agora podem ser `null`:** desde a migração LID-aware (Baileys v7), `id` é o JID
+> `@lid` do contato — `null` quando o ManyBot ainda não aprendeu o LID dessa pessoa. `number` e os
+> demais campos de telefone (`numberRaw`, `numberPretty`, `country`, `countryCallingCode`) vêm do
+> [`libphonenumber-js`](https://www.npmjs.com/package/libphonenumber-js) e também são `null`
+> quando não resolvido ou inválido. Sempre trate esses campos como possivelmente `null` antes de
+> usar — inclusive `id`, que antes era sempre uma string. Veja também a nota de `sender`/`senderPn`
+> em [ctx.msg](/docs/api/ctx-msg/).
+>
 > `shortName`, `isEnterprise` e `isBlocked` hoje são sempre `null`/`false` — o ManyBot ainda não
 > deriva esses dados de verdade a partir do WhatsApp. Não confie neles pra decisões (ex: não use
 > `isBlocked` pra saber se um contato te bloqueou). `isBusiness` é diferente: **é** checado de
@@ -77,3 +89,4 @@ Mesma shape em `ctx.contacts.get()` e `ctx.msg.getContact()`:
 const contact = await ctx.msg.getContact();
 await ctx.msg.reply.text(`oi ${contact.mention.text}`, contact.mention);
 ```
+
