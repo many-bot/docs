@@ -1,0 +1,79 @@
+---
+title: ctx.send
+description: ManyBot's message-sending API — text, media, sticker, poll, chainable actions (react/delete/edit), and .to(chatId) routing.
+sidebar:
+  order: 3
+---
+
+import CtxMethod from '../../../../components/CtxMethod.astro';
+
+Sending API. Every method returns a `MessageHandle` (thenable) with chainable actions.
+
+```js
+// current chat (runtime only)
+await ctx.send.text("Hello!");
+await ctx.send.text("https://example.com", { linkPreview: false });
+await ctx.send.text("Hi @user", { mentions: ["5511999999999@c.us"] });
+
+await ctx.send.image("/tmp/photo.jpg", "caption");
+await ctx.send.image("/tmp/photo.jpg", "secret", { viewOnce: true });
+
+await ctx.send.video("/tmp/video.mp4", "caption");
+await ctx.send.gif("/tmp/anim.gif", "caption");               // converted to mp4 via ffmpeg
+await ctx.send.audio("/tmp/audio.ogg");                      // as voice note (default)
+await ctx.send.audio("/tmp/audio.ogg", { asVoice: false });   // as regular audio
+await ctx.send.sticker("/tmp/sticker.webp");
+await ctx.send.sticker(bufferGeneratedInMemory);
+await ctx.send.file("/tmp/report.pdf", "report-2025.pdf");
+await ctx.send.poll("Which flavor?", ["Strawberry", "Chocolate"], { allowMultipleAnswers: true });
+
+// any chat, by ID (setup + runtime)
+await ctx.send.to(chatId).text("notification");
+```
+
+<CtxMethod id="send.text" />
+<CtxMethod id="msg.reply.text" />
+
+<CtxMethod id="send.to" />
+
+The options accepted by each method (`text`, `image`/`video`/`gif`, `audio`, `poll`, `sticker`/`file`)
+are gathered in [ctx — options and signatures](/docs/api/ctx-options/#ctxsend).
+
+> `ctx.send.gif()` (and `ctx.msg.reply.gif()`) automatically converts the file to `mp4` via
+> `ffmpeg` before sending — WhatsApp doesn't accept a real GIF as media.
+
+### Post-send actions (chaining)
+
+```js
+await ctx.send.text("Done!").react("✅");
+
+const handle = await ctx.send.image("/tmp/x.jpg"); // handle = the sent Message
+await handle.delete();
+```
+
+`delete(forEveryone? = true)` and `react(emoji)` return a `Promise`. Currently, `delete(false)`
+("delete for me only") **does nothing** — only `delete()`/`delete(true)` (delete for everyone)
+actually has an effect.
+
+```js
+const handle = await ctx.send.text("Processing...");
+await handle.edit("Done! ✅");
+```
+
+`edit(text)` only works on messages sent **by the bot itself** — calling it on a message that isn't
+`fromMe` throws an error. With `SECURITY_LEVEL = "high"` (`manybot.toml`), edits go through a
+throttle (like the rest of sends); on the other levels (`low`/`medium`) no throttle at all
+is applied to `edit()`.
+
+> `pin(duration?)` also exists in the interface, but currently **has no effect** — Baileys (the
+> library behind the WhatsApp connection) doesn't support pinning messages yet, so calling
+> `.pin()` just logs a warning and does nothing. We left the method there for when that changes.
+
+> **send vs reply:** `ctx.send.*` sends without quoting anything. `ctx.msg.reply.*` quotes the message that
+> triggered the handler — prefer `reply` in groups. See [ctx.msg](/docs/api/ctx-msg/).
+
+> **`ctx.send.to()` inside a handler** doesn't apply your plugin's `guardOptions` `cooldown`/`jitter`
+> (only the global send limit still applies) — that's because `.to()` is normally meant to
+> notify another chat, not the current one. In `setup()`, on the other hand, `ctx.send.to()` applies
+> `cooldown`/`jitter` normally (the defaults, `true`/`true`, since there's no chat
+> `guardOptions` at that point).

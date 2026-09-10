@@ -1,0 +1,131 @@
+---
+title: Common patterns
+description: Ready-made recipes for the most common plugin scenarios — simple command, per-chat session, setup with notification, persistent data, i18n, admin commands, scheduled reminder.
+sidebar:
+  order: 24
+---
+
+import CtxMethod from '../../../../components/CtxMethod.astro';
+
+### Simple command
+
+```js
+export default async function (ctx) {
+  if (!ctx.msg.is("hi")) return;
+  await ctx.msg.reply.text(`Hello, ${ctx.msg.senderName}!`);
+}
+```
+
+### Ignoring the bot and media
+
+```js
+export default async function (ctx) {
+  if (ctx.msg.fromMe) return;
+  if (ctx.msg.type !== "chat") return; // text only
+  // ...
+}
+```
+
+### Per-chat state (sessions)
+
+```js
+const sessions = new Map();
+const TIMEOUT = 2 * 60 * 1000;
+
+export default async function (ctx) {
+  const { msg, chat } = ctx;
+
+  if (msg.is("start")) {
+    const timeout = setTimeout(() => sessions.delete(chat.id), TIMEOUT);
+    sessions.set(chat.id, { author: msg.sender, timeout });
+    await msg.reply.text("Session started! You have 2 minutes.");
+    return;
+  }
+
+  if (msg.is("end")) {
+    const session = sessions.get(chat.id);
+    if (!session) return void await msg.reply.text("No active session.");
+    clearTimeout(session.timeout);
+    sessions.delete(chat.id);
+    await msg.reply.text("Session ended.");
+  }
+}
+```
+
+> This recipe uses a manual `Map()`, but [`ctx.session`](/docs/api/ctx-session/)
+> 🧪 already does this same per-chat lock inside the kernel today — worth considering instead of reimplementing it.
+
+### Setup with notification
+
+```js
+const ADMIN = "5511999999999@c.us";
+
+export async function setup(ctx) {
+  ctx.log.success("my-plugin loaded.");
+  await ctx.send.to(ADMIN).text("Bot online! 🟢");
+}
+
+export default async function (ctx) {
+  if (ctx.msg.is("status")) await ctx.send.text("Everything's working.");
+}
+```
+
+<CtxMethod id="send.to" />
+
+### Persistent data
+
+```js
+import { readFileSync, writeFileSync, existsSync } from "fs";
+
+export default async function (ctx) {
+  if (!ctx.msg.is("points")) return;
+
+  const dbPath = ctx.storage.resolve("points.json");
+  const db = existsSync(dbPath) ? JSON.parse(readFileSync(dbPath, "utf-8")) : {};
+  db[ctx.msg.sender] = (db[ctx.msg.sender] ?? 0) + 1;
+  writeFileSync(dbPath, JSON.stringify(db, null, 2));
+
+  await ctx.msg.reply.text(`You have ${db[ctx.msg.sender]} point(s)!`);
+}
+```
+
+<CtxMethod id="storage.resolve" />
+
+### Its own i18n
+
+```js
+export default async function (ctx) {
+  const { t } = ctx.i18n.createT(import.meta.url);
+  if (!ctx.msg.is("help")) return;
+  await ctx.send.text(t("help.text"));
+}
+```
+
+### Restricted to admins
+
+```js
+export default async function (ctx) {
+  if (!ctx.chat.isGroup) return;
+  if (!ctx.msg.is("clear")) return;
+
+  if (!await ctx.chat.isAdmin(ctx.msg.sender)) {
+    return void await ctx.msg.reply.text("Only admins can use this command.");
+  }
+
+  ctx.utils.emptyFolder("./downloads");
+  await ctx.msg.reply.text("Cache cleared.");
+}
+```
+
+### Scheduled reminder
+
+```js
+export async function setup(ctx) {
+  ctx.scheduler.schedule("0 9 * * *", async () => {
+    for (const chatId of subscribedChats) {
+      await ctx.send.to(chatId).text("Good morning! ☀️");
+    }
+  });
+  // schedule() returns { stop() } — keep the reference if you ever need to cancel it
+}
+```

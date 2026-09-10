@@ -1,19 +1,17 @@
 ---
 title: Many - o bot oficial do ManyBot
-description: bot oficial do projeto, construído usando o próprio ManyBot. 
+description: A Many é o bot oficial gratuito do ManyBot, adicionável pelo número +55 16 99459-1903 — voltada pra quem só quer figurinhas e ferramentas no WhatsApp sem hospedar nada.
 sidebar:
   order: 3
 ---
 
 A Many é a mascote do ManyBot, e também o bot oficial do ManyBot, adicionável no WhatsApp pelo
-número [+55 16 99459-1903](https://api.whatsapp.com/send/?phone=5516994591903&text=!many).
+número **+55 16 99459-1903**.
 
 O uso do bot oficial é totalmente gratuito e sem limites, foi pensado para quem só quer fazer
 figurinhas e ter algumas ferramentas diretamente no WhatsApp sem pagar caro por bots fechados.
 
-O servidor onde hospedamos ela é pago voluntariamente. Caso queira ajudar a manter os custos, você
-pode [fazer uma doação](/donates). Caso você não queira ou não pode, ainda sim pode continuar
-usando sem limites.
+Ela é hospedada em um servidor Ubuntu Server, com 2 vCPU e 4GB de RAM.
 
 # Posso adicionar a Many em um grupo?
 

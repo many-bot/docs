@@ -1,0 +1,172 @@
+---
+title: ctx.msg
+description: Context of the message that triggered the handler — body, sender, args, reply with quote, media download, and quoted message.
+sidebar:
+  order: 4
+---
+
+Context of the message that triggered the handler (runtime only).
+
+```js
+ctx.msg.id;            // string - unique message ID
+ctx.msg.timestamp;     // integer - UNIX timestamp
+ctx.msg.body;          // string - full text
+ctx.msg.type;          // string - "chat" | "image" | "video" | "audio" | ...
+ctx.msg.fromMe;        // boolean - true if sent by the bot itself
+ctx.msg.sender;        // string|null - canonical LID of who sent it (@lid)
+ctx.msg.senderPn;      // string|null - same sender in phone-number format (@c.us)
+ctx.msg.senderName;    // string - display name
+ctx.msg.command;       // string - first word, without the prefix, normalized
+ctx.msg.args;          // string[] - words after the command
+ctx.msg.hasMedia;      // boolean - true if the message has any media (image, video, audio, document)
+ctx.msg.isGif;         // boolean - true if the message has a GIF
+ctx.msg.hasReply;      // boolean - true if it's a reply to another message
+ctx.msg.hasPrefix;     // true if it starts with CMD_PREFIX
+ctx.msg.hasMention;    // true if the message mentions someone (@)
+ctx.msg.hasBotMention; // true if the message mentions the bot itself
+ctx.msg.mentionedJid;  // string[] — mentioned JIDs, PN already resolved to @lid when known
+```
+
+Functions:
+
+```js
+ctx.msg.is(cmd: string);                        // boolean - cmd: prefix + normalized string (e.g. "!ping")
+ctx.msg.downloadMedia(opts?: {asMp4?: boolean}) // Promise<{ mimetype: string; data: string}|null> - Downloads media if any, returns the path along with the mimetype.
+                                                // asMp4, if true, downloads in MP4 format
+
+ctx.msg.
+```
+
+> **`sender` is now canonical LID, not `@c.us`:** since the migration to Baileys v7 (LID-aware),
+> `ctx.msg.sender` returns the sender's `@lid` JID — `null` when ManyBot hasn't yet learned
+> that contact's LID (common on first contact). **There's no more silent fallback to
+> `@c.us`.** If your plugin still compares `sender` against phone numbers (e.g. against `CHATS`
+> in `manybot.toml`, or number-based config), use `ctx.msg.senderPn` — the same person, in
+> `@c.us` format, also `null` when unavailable. Treat both fields as possibly `null`
+> before comparing.
+>
+> **ID format elsewhere:** private chats (`ctx.chat.id`, `CHATS` in
+> `manybot.toml`) remain normalized to the `@c.us` suffix, and groups remain `@g.us` — that
+> part hasn't changed. The switch to LID is specific to **person** identity (`ctx.msg.sender`,
+> `id` in the [normalized contact object](/docs/api/ctx-contacts/#normalized-contact-object)), not
+> **chat**. Always use `@c.us` when manually building or comparing a private chat ID —
+> a value with `@s.whatsapp.net` (Baileys' native format) won't match a `===`
+> comparison against `ctx.chat.id`.
+
+### Detecting commands
+
+```js
+// Message: "!ping"  (CMD_PREFIX = "!")
+if (ctx.msg.is("ping")) {
+  await ctx.send.text("pong!");
+}
+```
+
+`msg.is` already normalizes the text internally, meaning `msg.is("ola")` returns `true` for "!ola", "!Ola", "!OLA", and other variations.
+
+### Reading arguments
+
+```js
+// Message: "!video https://youtube.com/watch?v=..."
+const url = ctx.msg.args[0];
+if (!url) {
+  await ctx.msg.reply.text("Provide a URL.");
+  return;
+}
+```
+
+### Replying with a quote
+
+`ctx.msg.reply` is a full sender — same methods as [`ctx.send`](/docs/api/ctx-send/), but
+quoting the original message:
+
+```js
+await ctx.msg.reply.text("Here's your answer!");
+await ctx.msg.reply.image("/tmp/photo.jpg", "Your image.");
+```
+
+### Downloading media
+
+```js
+if (ctx.msg.hasMedia) {
+  const media = await ctx.msg.downloadMedia(); // { mimetype, data(base64) } | null
+  if (!media) return void await ctx.msg.reply.text("Couldn't download it.");
+  const buf = Buffer.from(media.data, "base64");
+}
+```
+
+### Quoted message
+
+```js
+if (ctx.msg.hasReply) {
+  const quoted = await ctx.msg.getReply(); // object with the same shape as ctx.msg | null
+  console.log(quoted?.senderName, quoted?.hasMedia, quoted?.body);
+}
+```
+
+`getReply()` returns an object **with the same shape as `ctx.msg`** (`body`, `type`, `sender`,
+`senderName`, `hasMedia`, `isGif`, `downloadMedia()`, `hasPrefix`, `command`, `args`, `reply`,
+etc.) — not Baileys' raw format. That means you can indeed use
+`quoted.hasMedia`/`quoted.downloadMedia()`/`quoted.reply.text(...)` directly:
+
+```js
+if (ctx.msg.hasReply) {
+  const quoted = await ctx.msg.getReply();
+  if (quoted?.hasMedia) {
+    const media = await quoted.downloadMedia(); // downloads the quoted message's media
+  }
+}
+```
+
+> There's no `quoted.pushName` or `quoted.message` field — use `quoted.senderName` (same as
+> `ctx.msg.senderName`), and if you need Baileys' raw structure for some specific reason,
+> there's no public shortcut for that today.
+
+> `getReply()` makes no network calls — it just reprocesses data the current message already
+> carries with it (the quote comes embedded in `contextInfo`). There's no delay associated with it.
+
+> `quoted.senderName` **always** falls back to the phone number — WhatsApp's quoting protocol
+> (`contextInfo`) doesn't carry the `pushName` of whoever sent the original message, only the JID. This is
+> different from `ctx.contacts.get()`/`ctx.msg.getContact()`, which does actually learn and store the
+> real name live (see the note in [ctx.contacts](/docs/api/ctx-contacts/)) — but `getReply()` doesn't
+> go through that path, so it doesn't benefit from it.
+
+### Sender's contact
+
+`ctx.msg.getContact()` resolves `@lid` automatically — prefer it over
+`ctx.contacts.get(ctx.msg.sender)` inside a handler. Same shape as the
+[normalized contact object](/docs/api/ctx-contacts/#normalized-contact-object), including the same
+behavior of returning `null` for someone the bot hasn't "seen" send a message yet (see the
+note in [ctx.contacts](/docs/api/ctx-contacts/)) — handle that case before using `contact.mention`
+or any other field:
+
+```js
+const contact = await ctx.msg.getContact();
+if (!contact) return; // we don't have data for this contact yet
+await ctx.msg.reply.text(`hi ${contact.mention.text}`, contact.mention);
+```
+
+### Detecting mentions
+
+```js
+if (ctx.msg.hasBotMention) {
+  await ctx.msg.reply.text("Did you call me?");
+}
+
+if (ctx.msg.hasMention) {
+  for (const jid of ctx.msg.mentionedJid) {
+    ctx.log.info(`Mentioned: ${jid}`); // already in @lid when resolved
+  }
+}
+```
+
+### Avoiding loops
+
+The bot also receives its own messages:
+
+```js
+export default async function (ctx) {
+  if (ctx.msg.fromMe) return;
+  // ...
+}
+```
