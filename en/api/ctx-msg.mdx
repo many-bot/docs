@@ -21,10 +21,10 @@ ctx.msg.args;          // string[] - words after the command
 ctx.msg.hasMedia;      // boolean - true if the message has any media (image, video, audio, document)
 ctx.msg.isGif;         // boolean - true if the message has a GIF
 ctx.msg.hasReply;      // boolean - true if it's a reply to another message
-ctx.msg.hasPrefix;     // true if it starts with CMD_PREFIX
+ctx.msg.hasPrefix;     // true if it starts with CMD_PREFIX (from manybot.toml)
 ctx.msg.hasMention;    // true if the message mentions someone (@)
 ctx.msg.hasBotMention; // true if the message mentions the bot itself
-ctx.msg.mentionedJid;  // string[] — mentioned JIDs, PN already resolved to @lid when known
+ctx.msg.mentionedJid;  // string[] - mentioned JIDs, PN already resolved to @lid when known
 ```
 
 Functions:
@@ -32,9 +32,20 @@ Functions:
 ```js
 ctx.msg.is(cmd: string);                        // boolean - cmd: prefix + normalized string (e.g. "!ping")
 ctx.msg.downloadMedia(opts?: {asMp4?: boolean}) // Promise<{ mimetype: string; data: string}|null> - Downloads media if any, returns the path along with the mimetype.
-                                                // asMp4, if true, downloads in MP4 format
+                                                 // the 'asMp4' option, if true, downloads in MP4 format
 
-ctx.msg.
+ctx.msg.getReply()                              // Promise<WAMessageContext | null> - Returns the message object that msg is replying to. Or null if not replying to any.
+ctx.msg.reply.text/image/video/audio/file/poll  // Same as a ctx.send, but sends as a reply to message msg
+ctx.msg.react(emoji: string)                    // Promise - Reacts to message with an emoji. Returns runtime error if a non-emoji character or more than one is used
+                                                // use react("") (empty) to remove a reaction
+
+ctx.msg.delete(forEveryone?: false | true)      // Promise - Deletes the message
+                                                // the forEveryone option deletes the message for everyone, defaults to `true`
+
+ctx.msg.edit(text: string)                      // Promise - Edits the message (only if it is yours)
+ctx.msg.pin()                                   // Deprecated. Unfortunately this doesn't work, it's here as residue from the whatsapp-web.js to Baileys migration. Maybe in the near future
+ctx.msg.getContact()                            // Promise<NormalizedContact | null> - Gets the contact object of who sent the message
+
 ```
 
 > **`sender` is now canonical LID, not `@c.us`:** since the migration to Baileys v7 (LID-aware),
